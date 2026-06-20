@@ -18,14 +18,14 @@ const Hero = () => {
 
       <div className="absolute bottom-0 left-0 right-0 h-[20vh] bg-gradient-to-b from-transparent via-[#0a0a0a] to-[#0a0a0a]"></div>
 
-      <div className="relative z-20 flex flex-col lg:flex-row w-full min-h-screen">
+      <div className="relative z-20 flex flex-col lg:flex-row-reverse w-full min-h-screen">
 
         {/* Image stack */}
-        <div className="relative w-full lg:w-[55%] h-[60vh] sm:h-[70vh] lg:h-screen lg:sticky lg:top-0 overflow-hidden flex items-center justify-center lg:justify-start lg:pl-24">
+        <div className="relative w-full lg:w-[55%] h-[60vh] sm:h-[70vh] lg:h-screen lg:sticky lg:top-0 overflow-hidden flex items-center justify-center lg:justify-end lg:pr-24">
           {profileImages.map((num, i) => (
             <div
               key={num}
-              className={`absolute inset-0 flex items-center justify-center lg:justify-start pl-0 sm:pl-8 lg:pl-24 ${floatClasses[i]}`}
+              className={`absolute inset-0 flex items-center justify-center lg:justify-end pr-0 sm:pr-8 lg:pr-24 ${floatClasses[i]}`}
             >
               <Image
                 src={`/images/profile/${num}.png`}
@@ -41,12 +41,12 @@ const Hero = () => {
         </div>
 
         {/* Text content */}
-        <div className="relative w-full lg:w-[45%] flex flex-col items-center lg:items-end justify-center px-6 sm:px-8 lg:px-12 xl:px-20 py-12 sm:py-16 lg:py-0">
+        <div className="relative w-full lg:w-[45%] flex flex-col items-center lg:items-start justify-center px-6 sm:px-8 lg:px-12 xl:px-20 py-12 sm:py-16 lg:py-0">
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-center lg:text-right flex flex-col items-center lg:items-end w-full max-w-xl"
+            className="text-center lg:text-left flex flex-col items-center lg:items-start w-full max-w-xl"
           >
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -58,14 +58,14 @@ const Hero = () => {
                 <br />
                 <span className="text-3xl sm:text-4xl lg:text-5xl text-gray-500">Soundsculptures</span>
               </h1>
-              <div className="w-24 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mx-auto lg:mr-0 mb-8"></div>
+              <div className="w-24 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mx-auto lg:ml-0 mb-8"></div>
             </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="text-xl sm:text-2xl text-gray-400 mb-8 max-w-2xl mx-auto lg:mr-0 leading-relaxed font-body"
+              className="text-xl sm:text-2xl text-gray-400 mb-8 max-w-2xl mx-auto lg:ml-0 leading-relaxed font-body"
             >
               Handcrafted handpans of the highest quality
               <br />
@@ -78,7 +78,7 @@ const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.0 }}
-              className="flex flex-row gap-4 justify-center lg:justify-end items-center lg:items-end w-full"
+              className="flex flex-row gap-4 justify-center lg:justify-start items-center lg:items-start w-full"
             >
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
