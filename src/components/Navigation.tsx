@@ -35,10 +35,10 @@ const Navigation = () => {
   }, [isOpen]);
 
   const navItems = [
-    { name: 'خانه', href: '/' },
-    { name: 'محصولات', href: '/products' },
-    { name: 'جستجوی سریال', href: '/lookup' },
-    { name: 'تماس با ما', href: '/contact' },
+    { name: 'Home', href: '/' },
+    { name: 'Products', href: '/products' },
+    { name: 'Serial Lookup', href: '/lookup' },
+    { name: 'Contact', href: '/contact' },
   ];
 
   const isTransparent = !scrolled && !isOpen;
@@ -56,14 +56,14 @@ const Navigation = () => {
           : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:ps-6 lg:pe-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-16">
           <div className="flex items-center gap-8 shrink-0">
             <motion.div whileHover={{ scale: 1.05 }}>
               <Link href="/" className="flex items-center">
                 <Image
                   src="/images/logo/logo.png"
-                  alt="آرسون"
+                  alt="Arsoun"
                   width={48}
                   height={48}
                   className={`h-10 w-auto ${isTransparent ? 'invert' : ''}`}
@@ -83,7 +83,7 @@ const Navigation = () => {
                 >
                   <Link
                     href={item.href}
-                    className={`${isTransparent ? 'text-white/90 hover:text-white' : 'text-gray-900 hover:text-gray-700'} font-vazir font-medium transition-colors duration-200 relative group`}
+                    className={`${isTransparent ? 'text-white/90 hover:text-white' : 'text-gray-900 hover:text-gray-700'} font-body font-medium transition-colors duration-200 relative group`}
                   >
                     {item.name}
                     <span className={`absolute -bottom-1 left-0 w-0 h-0.5 ${isTransparent ? 'bg-white' : 'bg-gray-900'} transition-all duration-300 group-hover:w-full`}></span>
@@ -125,7 +125,7 @@ const Navigation = () => {
                   <Link
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className="block text-gray-700 hover:text-gray-900 font-vazir font-medium py-3 px-4 transition-colors text-end w-full min-h-[44px] flex items-center justify-start rounded-lg hover:bg-gray-50"
+                    className="block text-gray-700 hover:text-gray-900 font-body font-medium py-3 px-4 transition-colors text-start w-full min-h-[44px] flex items-center justify-start rounded-lg hover:bg-gray-50"
                   >
                     {item.name}
                   </Link>

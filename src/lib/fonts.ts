@@ -1,43 +1,15 @@
-import localFont from 'next/font/local';
+import { Space_Grotesk, Outfit } from 'next/font/google';
 
-// Custom font configuration - replace with your own fonts
-// Place your .ttf/.woff2 files in public/fonts/
-export const customFont = localFont({
-  src: [
-    {
-      path: '../../public/fonts/siavash.ttf',
-      weight: '400',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-siavash',
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-heading',
   display: 'swap',
 });
 
-// Vazirmatn - Modern Persian body font
-export const vazirmatn = localFont({
-  src: [
-    {
-      path: '../../public/fonts/Vazirmatn-Regular.ttf',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/Vazirmatn-Medium.ttf',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/Vazirmatn-SemiBold.ttf',
-      weight: '600',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/Vazirmatn-Bold.ttf',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-vazir',
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-body',
   display: 'swap',
 });
+
+export const fonts = `${spaceGrotesk.variable} ${outfit.variable}`;

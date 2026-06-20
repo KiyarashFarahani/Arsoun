@@ -29,12 +29,12 @@ const CTA = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
           viewport={{ once: true }}
-          className="text-4xl sm:text-5xl lg:text-6xl font-siavash font-bold text-white mb-6 leading-tight"
+          className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-white mb-6 leading-tight"
         >
-          هندپن خودت رو
+          Order Your
           <br />
           <span className="bg-gradient-to-r from-gray-300 via-white to-gray-300 bg-clip-text text-transparent">
-            سفارش بده
+            Custom Handpan
           </span>
         </motion.h2>
 
@@ -43,9 +43,9 @@ const CTA = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           viewport={{ once: true }}
-          className="text-lg sm:text-xl text-gray-400 font-vazir max-w-2xl mx-auto mb-10 leading-relaxed"
+          className="text-lg sm:text-xl text-gray-400 font-body max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          از طریق اینستاگرام یا واتساپ با ما در تماس باشید و هندپن مورد نظر خود را سفارش دهید.
+          Get in touch via Instagram or WhatsApp to discuss your custom handpan order.
         </motion.p>
 
         <motion.div
@@ -58,18 +58,18 @@ const CTA = () => {
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/contact"
-              className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-[#020617] font-vazir font-semibold rounded-full shadow-lg shadow-white/10 hover:bg-gray-200 transition-all duration-300"
+              className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-[#020617] font-body font-semibold rounded-full shadow-lg shadow-white/10 hover:bg-gray-200 transition-all duration-300"
             >
-              تماس با ما
+              Contact Us
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/15 text-white font-vazir font-semibold rounded-full hover:border-white/30 hover:bg-white/5 transition-all duration-300"
+              className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/15 text-white font-body font-semibold rounded-full hover:border-white/30 hover:bg-white/5 transition-all duration-300"
             >
-              مشاهده محصولات
+              View Products
             </Link>
           </motion.div>
         </motion.div>
@@ -79,19 +79,19 @@ const CTA = () => {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.6 }}
           viewport={{ once: true }}
-          className="mt-12 flex flex-wrap justify-center gap-6 text-sm text-gray-500 font-vazir"
+          className="mt-12 flex flex-wrap justify-center gap-6 text-sm text-gray-500 font-body"
         >
           <span className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" />
-            ارسال رایگان به سراسر جهان
+            Free worldwide shipping
           </span>
           <span className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" />
-            گارانتی ۲ ساله
+            2-year warranty
           </span>
           <span className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" />
-            کیف سخت + روکش باران
+            Hard case + rain cover included
           </span>
         </motion.div>
       </div>

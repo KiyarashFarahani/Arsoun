@@ -59,10 +59,10 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
     return (
       <div className="min-h-screen bg-[#020617] pt-24 pb-16 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-siavash font-bold text-white mb-4">یافت نشد</h1>
-          <p className="text-gray-400 font-vazir mb-8">هندپنی با سریال {serialNumber} یافت نشد</p>
-          <Link href="/lookup" className="px-6 py-3 bg-white text-[#020617] rounded-full font-vazir hover:bg-gray-200 transition-colors">
-            بازگشت به جستجو
+          <h1 className="text-4xl font-heading font-bold text-white mb-4">Not Found</h1>
+          <p className="text-gray-400 font-body mb-8">No instrument found with serial {serialNumber}</p>
+          <Link href="/lookup" className="px-6 py-3 bg-white text-[#020617] rounded-full font-body hover:bg-gray-200 transition-colors">
+            Back to Lookup
           </Link>
         </div>
       </div>
@@ -70,16 +70,16 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
   }
 
   const specs = [
-    { label: 'مقیاس', value: instrument.scale },
-    { label: 'تعداد نت', value: instrument.numberOfNotes?.toString() },
-    { label: 'نت‌ها', value: instrument.notes },
-    { label: 'جنس', value: instrument.material === 'stainless-steel' ? 'استیل ضد زنگ' : instrument.material === 'nitrided' ? 'نیترید' : instrument.material === 'custom' ? 'سفارشی' : instrument.material },
-    { label: 'قطر', value: instrument.diameter },
-    { label: 'وزن', value: instrument.weight },
-    { label: 'ضخامت', value: instrument.thickness },
-    { label: 'تاریخ ساخت', value: instrument.dateMade ? new Date(instrument.dateMade).toLocaleDateString('fa-IR') : undefined },
-    { label: 'قیمت', value: instrument.price ? `${instrument.price.toLocaleString('fa-IR')} تومان` : undefined },
-    { label: 'وضعیت', value: instrument.status === 'available' ? 'موجود' : instrument.status === 'sold' ? 'فروخته شده' : instrument.status === 'reserved' ? 'رزرو شده' : instrument.status },
+    { label: 'Scale', value: instrument.scale },
+    { label: 'Number of Notes', value: instrument.numberOfNotes?.toString() },
+    { label: 'Notes', value: instrument.notes },
+    { label: 'Material', value: instrument.material === 'stainless-steel' ? 'Stainless Steel' : instrument.material === 'nitrided' ? 'Nitrided' : instrument.material === 'custom' ? 'Custom' : instrument.material },
+    { label: 'Diameter', value: instrument.diameter },
+    { label: 'Weight', value: instrument.weight },
+    { label: 'Thickness', value: instrument.thickness },
+    { label: 'Date Made', value: instrument.dateMade ? new Date(instrument.dateMade).toLocaleDateString('en-US') : undefined },
+    { label: 'Price', value: instrument.price ? `${instrument.price.toLocaleString('en-US')} Tomans` : undefined },
+    { label: 'Status', value: instrument.status === 'available' ? 'Available' : instrument.status === 'sold' ? 'Sold' : instrument.status === 'reserved' ? 'Reserved' : instrument.status },
   ].filter((spec) => spec.value);
 
   return (
@@ -92,15 +92,15 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
         >
           <Link
             href={instrument.category?.slug ? `/products/${instrument.category.slug}` : '/products'}
-            className="inline-flex items-center gap-2 text-sm font-vazir text-gray-400 hover:text-white transition-colors mb-6"
+            className="inline-flex items-center gap-2 text-sm font-body text-gray-400 hover:text-white transition-colors mb-6"
           >
-            ← بازگشت
+            ← Back
           </Link>
 
-          <h1 className="text-3xl sm:text-4xl font-siavash font-bold text-white mb-2">
+          <h1 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-2">
             {instrument.title}
           </h1>
-          <p className="text-sm text-gray-600 font-vazir mb-8">سریال: {instrument.serialNumber}</p>
+          <p className="text-sm text-gray-600 font-body mb-8">Serial: {instrument.serialNumber}</p>
         </motion.div>
 
         {instrument.images && instrument.images.length > 0 && (
@@ -143,12 +143,12 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
           transition={{ duration: 0.6, delay: 0.3 }}
           className="bg-white/[0.04] border border-white/[0.06] rounded-2xl p-6 sm:p-8"
         >
-          <h2 className="text-xl font-siavash font-bold text-white mb-6">مشخصات</h2>
+          <h2 className="text-xl font-heading font-bold text-white mb-6">Specifications</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {specs.map((spec) => (
               <div key={spec.label} className="flex justify-between py-3 border-b border-white/[0.04]">
-                <span className="text-sm text-gray-400 font-vazir">{spec.label}</span>
-                <span className="text-sm text-white font-vazir font-medium">{spec.value}</span>
+                <span className="text-sm text-gray-400 font-body">{spec.label}</span>
+                <span className="text-sm text-white font-body font-medium">{spec.value}</span>
               </div>
             ))}
           </div>
@@ -163,9 +163,9 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
           >
             <Link
               href={`/products/${instrument.category.slug}`}
-              className="text-sm font-vazir text-gray-400 hover:text-gray-200 transition-colors"
+              className="text-sm font-body text-gray-400 hover:text-gray-200 transition-colors"
             >
-              مشاهده همه {instrument.category.name} ها →
+              View all {instrument.category.name} →
             </Link>
           </motion.div>
         )}

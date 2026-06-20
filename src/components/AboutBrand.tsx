@@ -6,23 +6,23 @@ import { Ruler, Weight, Music, Shield } from 'lucide-react';
 const FEATURES = [
   {
     icon: Ruler,
-    title: 'قطر ۵۳ سانتی‌متر',
-    description: 'سایز استاندارد هندپن',
+    title: '53 cm Diameter',
+    description: 'Standard handpan size',
   },
   {
     icon: Weight,
-    title: 'وزن سبک',
-    description: 'حدود ۴.۵ کیلوگرم',
+    title: 'Lightweight',
+    description: 'Approx. 4.5 kg',
   },
   {
     icon: Music,
-    title: 'مقیاس‌های مختلف',
-    description: 'D Kurd، C# Annaziska و سفارشی',
+    title: 'Various Scales',
+    description: 'D Kurd, C# Annaziska & custom',
   },
   {
     icon: Shield,
-    title: 'گارانتی ۲ ساله',
-    description: 'باز کوک رایگان در صورت نیاز',
+    title: '2-Year Warranty',
+    description: 'Free retuning if needed',
   },
 ];
 
@@ -65,24 +65,24 @@ const AboutBrand = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
-              className="inline-block px-4 py-1.5 mb-6 text-sm font-vazir font-medium text-gray-300 bg-white/[0.04] border border-white/[0.08] rounded-full"
+              className="inline-block px-4 py-1.5 mb-6 text-sm font-body font-medium text-gray-300 bg-white/[0.04] border border-white/[0.08] rounded-full"
             >
-              درباره ما
+              About Us
             </motion.span>
-            <h2 className="text-4xl sm:text-5xl font-siavash font-bold text-white mb-6 leading-tight">
-              آرسون
+            <h2 className="text-4xl sm:text-5xl font-heading font-bold text-white mb-6 leading-tight">
+              Arsoun
               <br />
               <span className="text-3xl sm:text-4xl text-gray-500">Soundsculptures</span>
             </h2>
             <div className="w-20 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mb-8 rounded-full" />
-            <div className="space-y-5 text-gray-400 font-vazir leading-relaxed text-lg">
+            <div className="space-y-5 text-gray-400 font-body leading-relaxed text-lg">
               <p>
-                آرسون یک برند ایرانی سازنده هندپن است که در بندرانزلی فعالیت می‌کند.
-                هر ساز با دقت و عشق ساخته می‌شود تا بهترین کیفیت صدا را ارائه دهد.
+                Arsoun is an Iranian handpan maker based in Bandar-e Anzali.
+                Each instrument is crafted with precision and passion to deliver the finest sound quality.
               </p>
               <p>
-                از استیل ضد زنگ تا نیترید، از مقیاس‌های استاندارد تا سفارشی — ما اینجاییم
-                تا بهترین تجربه صوتی را برایتان بسازیم.
+                From stainless steel to nitrided, from standard scales to custom — we are here
+                to create the best possible musical experience for you.
               </p>
             </div>
           </motion.div>
@@ -105,10 +105,10 @@ const AboutBrand = () => {
                   <feature.icon size={18} className="text-gray-300" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-siavash font-bold text-white mb-1 group-hover:text-gray-200 transition-colors duration-300">
+                  <h3 className="text-sm font-heading font-bold text-white mb-1 group-hover:text-gray-200 transition-colors duration-300">
                     {feature.title}
                   </h3>
-                  <p className="text-xs text-gray-500 font-vazir leading-relaxed">
+                  <p className="text-xs text-gray-500 font-body leading-relaxed">
                     {feature.description}
                   </p>
                 </div>

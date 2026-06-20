@@ -106,20 +106,20 @@ function CategoryCard({ category, index }: { category: Category; index: number }
 
         <div className="p-6 flex flex-col flex-grow">
           <Link href={`/products/${category.slug}`} className="block mb-2">
-            <h3 className="text-xl font-siavash font-bold text-white group-hover:text-gray-200 transition-colors duration-300">
+            <h3 className="text-xl font-heading font-bold text-white group-hover:text-gray-200 transition-colors duration-300">
               {category.name}
             </h3>
           </Link>
           {category.description && (
-            <p className="text-sm text-gray-500 font-vazir mb-4 leading-relaxed line-clamp-2 flex-grow">
+            <p className="text-sm text-gray-500 font-body mb-4 leading-relaxed line-clamp-2 flex-grow">
               {category.description}
             </p>
           )}
           <Link
             href={`/products/${category.slug}`}
-            className="inline-flex items-center gap-1.5 text-sm font-vazir text-gray-400 hover:text-gray-200 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-body text-gray-400 hover:text-gray-200 transition-colors"
           >
-            مشاهده محصولات →
+            View products →
           </Link>
         </div>
       </div>
@@ -160,16 +160,16 @@ const FeaturedCategories = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 mb-6 text-sm font-vazir font-medium text-gray-300 bg-white/[0.04] border border-white/[0.08] rounded-full"
+            className="inline-block px-4 py-1.5 mb-6 text-sm font-body font-medium text-gray-300 bg-white/[0.04] border border-white/[0.08] rounded-full"
           >
-            محصولات ما
+            Our Products
           </motion.span>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-siavash font-bold text-white mb-6">
-            خط تولید
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-white mb-6">
+            Product Lines
           </h2>
           <div className="w-20 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mx-auto mb-6 rounded-full" />
-          <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto font-vazir leading-relaxed">
-            هندپن‌های ما در چهار مدل مختلف تولید می‌شوند
+          <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto font-body leading-relaxed">
+            Our handpans are available in four distinct product lines
           </p>
         </motion.div>
 
@@ -182,7 +182,7 @@ const FeaturedCategories = () => {
         >
           {categories.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-gray-500 font-vazir text-lg">به زودی محصولات اضافه می‌شوند</p>
+              <p className="text-gray-500 font-body text-lg">Products coming soon</p>
             </div>
           ) : (
             categories.map((category, index) => (

@@ -17,16 +17,16 @@ const WhatsAppIcon = ({ size = 20, className = "" }: { size?: number; className?
 );
 
 const FOOTER_LINKS = [
-  { label: 'خانه', href: '/' },
-  { label: 'محصولات', href: '/products' },
-  { label: 'جستجوی سریال', href: '/lookup' },
-  { label: 'تماس با ما', href: '/contact' },
+  { label: 'Home', href: '/' },
+  { label: 'Products', href: '/products' },
+  { label: 'Serial Lookup', href: '/lookup' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 const SOCIAL_LINKS = [
-  { icon: Instagram, href: 'https://instagram.com/arsoun', label: 'اینستاگرام' },
-  { icon: WhatsAppIcon, href: 'https://wa.me/989123456789', label: 'واتساپ' },
-  { icon: Send, href: 'https://t.me/arsoun', label: 'تلگرام' },
+  { icon: Instagram, href: 'https://instagram.com/arsoun', label: 'Instagram' },
+  { icon: WhatsAppIcon, href: 'https://wa.me/989123456789', label: 'WhatsApp' },
+  { icon: Send, href: 'https://t.me/arsoun', label: 'Telegram' },
 ];
 
 const COPYRIGHT_YEAR = new Date().getFullYear();
@@ -42,9 +42,9 @@ const Footer = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-2xl font-siavash font-bold text-white mb-3">آرسون</h3>
-            <p className="text-sm text-gray-500 font-vazir leading-relaxed max-w-xs">
-              سازنده هندپن دست‌ساز با کیفیت بالا. هر ساز با دقت و عشق ساخته شده است.
+            <h3 className="text-2xl font-heading font-bold text-white mb-3">Arsoun</h3>
+            <p className="text-sm text-gray-500 font-body leading-relaxed max-w-xs">
+              Crafting premium handcrafted handpans. Each instrument is made with precision and love.
             </p>
           </motion.div>
 
@@ -54,13 +54,13 @@ const Footer = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <h4 className="text-sm font-vazir font-semibold text-gray-400 mb-4 uppercase tracking-wider">لینک‌ها</h4>
+            <h4 className="text-sm font-body font-semibold text-gray-400 mb-4 uppercase tracking-wider">Links</h4>
             <ul className="space-y-2.5">
               {FOOTER_LINKS.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-gray-500 hover:text-white font-vazir text-sm transition-colors duration-200"
+                    className="text-gray-500 hover:text-white font-body text-sm transition-colors duration-200"
                   >
                     {link.label}
                   </Link>
@@ -75,7 +75,7 @@ const Footer = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <h4 className="text-sm font-vazir font-semibold text-gray-400 mb-4 uppercase tracking-wider">ما را دنبال کنید</h4>
+            <h4 className="text-sm font-body font-semibold text-gray-400 mb-4 uppercase tracking-wider">Follow Us</h4>
             <div className="flex gap-3">
               {SOCIAL_LINKS.map((social) => (
                 <motion.a
@@ -101,20 +101,20 @@ const Footer = () => {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="text-xs text-gray-600 font-vazir flex items-center gap-1.5"
+            className="text-xs text-gray-600 font-body flex items-center gap-1.5"
           >
-            ساخته شده با
+            Made with
             <Heart size={12} className="text-gray-600 fill-gray-600" />
-            توسط تیم آرسون
+            by the Arsoun team
           </motion.p>
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             viewport={{ once: true }}
-            className="text-xs text-gray-600 font-vazir"
+            className="text-xs text-gray-600 font-body"
           >
-            &copy; {COPYRIGHT_YEAR} آرسون Soundsculptures. تمامی حقوق محفوظ است.
+            &copy; {COPYRIGHT_YEAR} Arsoun Soundsculptures. All rights reserved.
           </motion.p>
         </div>
       </div>

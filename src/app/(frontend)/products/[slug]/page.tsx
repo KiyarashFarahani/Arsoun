@@ -47,10 +47,10 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
           transition={{ duration: 0.7 }}
           className="mb-12"
         >
-          <Link href="/products" className="inline-flex items-center gap-2 text-sm font-vazir text-gray-400 hover:text-white transition-colors mb-6">
-            ← بازگشت به محصولات
+          <Link href="/products" className="inline-flex items-center gap-2 text-sm font-body text-gray-400 hover:text-white transition-colors mb-6">
+            ← Back to Products
           </Link>
-          <h1 className="text-4xl sm:text-5xl font-siavash font-bold text-white mb-4">
+          <h1 className="text-4xl sm:text-5xl font-heading font-bold text-white mb-4">
             {categoryName || slug}
           </h1>
           <div className="w-20 h-1 bg-gradient-to-r from-gray-300 to-gray-500 rounded-full" />
@@ -70,7 +70,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
           </div>
         ) : instruments.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-gray-500 font-vazir text-lg">هنوز محصولی در این دسته‌بندی ثبت نشده</p>
+            <p className="text-gray-500 font-body text-lg">No instruments in this category yet</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -103,23 +103,23 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                         )}
 
                         {instrument.status && (
-                          <div className="absolute top-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs font-vazir text-white/90 border border-white/[0.08]">
-                            {instrument.status === 'available' ? 'موجود' : instrument.status === 'sold' ? 'فروخته شده' : 'رزرو شده'}
+                          <div className="absolute top-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs font-body text-white/90 border border-white/[0.08]">
+                            {instrument.status === 'available' ? 'Available' : instrument.status === 'sold' ? 'Sold' : 'Reserved'}
                           </div>
                         )}
                       </div>
 
                       <div className="p-6">
-                        <h2 className="text-lg font-siavash font-bold text-white group-hover:text-gray-200 transition-colors duration-300 mb-2">
+                        <h2 className="text-lg font-heading font-bold text-white group-hover:text-gray-200 transition-colors duration-300 mb-2">
                           {instrument.title}
                         </h2>
-                        <div className="space-y-1 text-sm text-gray-500 font-vazir">
-                          {instrument.scale && <p>مقیاس: {instrument.scale}</p>}
-                          {instrument.numberOfNotes && <p>تعداد نت: {instrument.numberOfNotes}</p>}
-                          {instrument.material && <p>جنس: {instrument.material === 'stainless-steel' ? 'استیل ضد زنگ' : instrument.material === 'nitrided' ? 'نیترید' : 'سفارشی'}</p>}
+                        <div className="space-y-1 text-sm text-gray-500 font-body">
+                          {instrument.scale && <p>Scale: {instrument.scale}</p>}
+                          {instrument.numberOfNotes && <p>Notes: {instrument.numberOfNotes}</p>}
+                          {instrument.material && <p>Material: {instrument.material === 'stainless-steel' ? 'Stainless Steel' : instrument.material === 'nitrided' ? 'Nitrided' : 'Custom'}</p>}
                         </div>
                         <div className="mt-4 pt-4 border-t border-white/[0.04]">
-                          <span className="text-xs text-gray-600 font-vazir">سریال: {instrument.serialNumber}</span>
+                          <span className="text-xs text-gray-600 font-body">Serial: {instrument.serialNumber}</span>
                         </div>
                       </div>
                     </div>

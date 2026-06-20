@@ -22,7 +22,7 @@ const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className="inline-block px-4 py-1.5 mb-6 text-sm font-vazir font-medium text-gray-300 bg-white/[0.04] border border-white/[0.08] rounded-full">
+            <span className="inline-block px-4 py-1.5 mb-6 text-sm font-body font-medium text-gray-300 bg-white/[0.04] border border-white/[0.08] rounded-full">
               Handpan Maker
             </span>
           </motion.div>
@@ -31,9 +31,9 @@ const Hero = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-5xl sm:text-6xl lg:text-7xl font-siavash font-bold text-white mb-6 leading-tight"
+            className="text-5xl sm:text-6xl lg:text-7xl font-heading font-bold text-white mb-6 leading-tight"
           >
-            آرسون
+            Arsoun
             <br />
             <span className="text-3xl sm:text-4xl lg:text-5xl text-gray-500">Soundsculptures</span>
           </motion.h1>
@@ -42,12 +42,12 @@ const Hero = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-xl sm:text-2xl text-gray-400 mb-8 max-w-2xl leading-relaxed font-vazir"
+            className="text-xl sm:text-2xl text-gray-400 mb-8 max-w-2xl leading-relaxed font-body"
           >
-            هندپن دست‌ساز با کیفیت بالا
+            Handcrafted handpans of the highest quality
             <br />
             <span className="text-lg text-gray-500">
-              ساخته شده در بندرانزلی، ایران
+              Made in Bandar-e Anzali, Iran
             </span>
           </motion.p>
 
@@ -60,17 +60,17 @@ const Hero = () => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/products"
-                className="px-8 py-4 bg-white text-[#020617] font-semibold rounded-full hover:bg-gray-200 transition-all duration-300 font-vazir flex items-center justify-center"
+                className="px-8 py-4 bg-white text-[#020617] font-semibold rounded-full hover:bg-gray-200 transition-all duration-300 font-body flex items-center justify-center"
               >
-                مشاهده محصولات
+                View Products
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/lookup"
-                className="px-8 py-4 border-2 border-white/20 text-white font-semibold rounded-full hover:border-white/40 hover:bg-white/5 transition-all duration-300 font-vazir flex items-center justify-center"
+                className="px-8 py-4 border-2 border-white/20 text-white font-semibold rounded-full hover:border-white/40 hover:bg-white/5 transition-all duration-300 font-body flex items-center justify-center"
               >
-                جستجوی سریال
+                Serial Lookup
               </Link>
             </motion.div>
           </motion.div>

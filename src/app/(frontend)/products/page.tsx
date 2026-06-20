@@ -48,12 +48,12 @@ export default function ProductsPage() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl sm:text-5xl font-siavash font-bold text-white mb-6">
-            محصولات ما
+          <h1 className="text-4xl sm:text-5xl font-heading font-bold text-white mb-6">
+            Our Products
           </h1>
           <div className="w-20 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mx-auto mb-6 rounded-full" />
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto font-vazir leading-relaxed">
-            هندپن‌های دست‌ساز آرسون در چهار مدل مختلف
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto font-body leading-relaxed">
+            Handcrafted handpans available in four product lines
           </p>
         </motion.div>
 
@@ -71,7 +71,7 @@ export default function ProductsPage() {
           </div>
         ) : categories.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 font-vazir text-lg">محصولی یافت نشد</p>
+            <p className="text-gray-500 font-body text-lg">No products found</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
@@ -112,20 +112,20 @@ export default function ProductsPage() {
 
                     <div className="p-6 flex flex-col flex-grow">
                       <Link href={`/products/${category.slug}`} className="block mb-2">
-                        <h2 className="text-xl font-siavash font-bold text-white group-hover:text-gray-200 transition-colors duration-300">
+                        <h2 className="text-xl font-heading font-bold text-white group-hover:text-gray-200 transition-colors duration-300">
                           {category.name}
                         </h2>
                       </Link>
                       {category.description && (
-                        <p className="text-sm text-gray-500 font-vazir mb-4 leading-relaxed flex-grow">
+                        <p className="text-sm text-gray-500 font-body mb-4 leading-relaxed flex-grow">
                           {category.description}
                         </p>
                       )}
                       <Link
                         href={`/products/${category.slug}`}
-                        className="inline-flex items-center gap-1.5 text-sm font-vazir text-gray-400 hover:text-gray-200 transition-colors"
+                        className="inline-flex items-center gap-1.5 text-sm font-body text-gray-400 hover:text-gray-200 transition-colors"
                       >
-                        مشاهده محصولات →
+                        View products →
                       </Link>
                     </div>
                   </div>

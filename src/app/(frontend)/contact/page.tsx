@@ -6,19 +6,19 @@ import { Instagram, Phone, MessageCircle } from 'lucide-react';
 const CONTACTS = [
   {
     icon: Instagram,
-    label: 'اینستاگرام',
+    label: 'Instagram',
     value: '@arsoun',
     href: 'https://instagram.com/arsoun',
   },
   {
     icon: Phone,
-    label: 'تلفن',
+    label: 'Phone',
     value: '+98 912 345 6789',
     href: 'tel:+989123456789',
   },
   {
     icon: MessageCircle,
-    label: 'واتساپ',
+    label: 'WhatsApp',
     value: '+98 912 345 6789',
     href: 'https://wa.me/989123456789',
   },
@@ -34,12 +34,12 @@ export default function ContactPage() {
           transition={{ duration: 0.7 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl sm:text-5xl font-siavash font-bold text-white mb-6">
-            تماس با ما
+          <h1 className="text-4xl sm:text-5xl font-heading font-bold text-white mb-6">
+            Contact Us
           </h1>
           <div className="w-20 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mx-auto mb-6 rounded-full" />
-          <p className="text-lg text-gray-400 font-vazir leading-relaxed">
-            برای سفارش یا سؤال، از طریق راه‌های زیر با ما در تماس باشید
+          <p className="text-lg text-gray-400 font-body leading-relaxed">
+            For orders or questions, reach out through any of the channels below
           </p>
         </motion.div>
 
@@ -60,8 +60,8 @@ export default function ContactPage() {
                 <contact.icon size={22} className="text-gray-300" />
               </div>
               <div>
-                <h3 className="text-sm font-vazir font-semibold text-gray-400 mb-1">{contact.label}</h3>
-                <p className="text-lg font-vazir text-white" dir="ltr">{contact.value}</p>
+                <h3 className="text-sm font-body font-semibold text-gray-400 mb-1">{contact.label}</h3>
+                <p className="text-lg font-body text-white" dir="ltr">{contact.value}</p>
               </div>
             </motion.a>
           ))}
@@ -73,8 +73,8 @@ export default function ContactPage() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-12 text-center"
         >
-          <p className="text-sm text-gray-500 font-vazir">
-            بندرانزلی، ایران
+          <p className="text-sm text-gray-500 font-body">
+            Bandar-e Anzali, Iran
           </p>
         </motion.div>
       </div>

@@ -42,12 +42,12 @@ export default function LookupPage() {
           transition={{ duration: 0.7 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl sm:text-5xl font-siavash font-bold text-white mb-6">
-            جستجوی سریال
+          <h1 className="text-4xl sm:text-5xl font-heading font-bold text-white mb-6">
+            Serial Lookup
           </h1>
           <div className="w-20 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mx-auto mb-6 rounded-full" />
-          <p className="text-lg text-gray-400 font-vazir leading-relaxed">
-            شماره سریال هندپن خود را وارد کنید تا مشخصات آن را مشاهده کنید
+          <p className="text-lg text-gray-400 font-body leading-relaxed">
+            Enter your handpan&apos;s serial number to view its specifications
           </p>
         </motion.div>
 
@@ -63,18 +63,18 @@ export default function LookupPage() {
               type="text"
               value={serial}
               onChange={(e) => setSerial(e.target.value)}
-              placeholder="شماره سریال را وارد کنید..."
-              className="flex-1 px-5 py-4 bg-white/[0.04] border border-white/[0.06] rounded-xl text-white font-vazir placeholder:text-gray-500 focus:outline-none focus:border-white/20 transition-colors"
+              placeholder="Enter serial number..."
+              className="flex-1 px-5 py-4 bg-white/[0.04] border border-white/[0.06] rounded-xl text-white font-body placeholder:text-gray-500 focus:outline-none focus:border-white/20 transition-colors"
             />
             <motion.button
               type="submit"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={loading || !serial.trim()}
-              className="px-6 py-4 bg-white text-[#020617] font-vazir font-medium rounded-xl hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-4 bg-white text-[#020617] font-body font-medium rounded-xl hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <Search size={18} />
-              {loading ? 'جستجو...' : 'جستجو'}
+              {loading ? 'Searching...' : 'Search'}
             </motion.button>
           </div>
         </motion.form>
@@ -91,27 +91,27 @@ export default function LookupPage() {
               </div>
             ) : result?.found && result.instrument ? (
               <div className="bg-white/[0.04] border border-white/[0.06] rounded-2xl p-6 sm:p-8">
-                <h2 className="text-xl font-siavash font-bold text-white mb-4">هندپن یافت شد!</h2>
+                <h2 className="text-xl font-heading font-bold text-white mb-4">Instrument Found!</h2>
                 <div className="space-y-3">
                   <div className="flex justify-between py-2 border-b border-white/[0.04]">
-                    <span className="text-sm text-gray-400 font-vazir">نام</span>
-                    <span className="text-sm text-white font-vazir">{result.instrument.title}</span>
+                    <span className="text-sm text-gray-400 font-body">Name</span>
+                    <span className="text-sm text-white font-body">{result.instrument.title}</span>
                   </div>
                   <div className="flex justify-between py-2 border-b border-white/[0.04]">
-                    <span className="text-sm text-gray-400 font-vazir">سریال</span>
-                    <span className="text-sm text-white font-vazir">{result.instrument.serialNumber}</span>
+                    <span className="text-sm text-gray-400 font-body">Serial</span>
+                    <span className="text-sm text-white font-body">{result.instrument.serialNumber}</span>
                   </div>
                   {result.instrument.scale && (
                     <div className="flex justify-between py-2 border-b border-white/[0.04]">
-                      <span className="text-sm text-gray-400 font-vazir">مقیاس</span>
-                      <span className="text-sm text-white font-vazir">{result.instrument.scale}</span>
+                      <span className="text-sm text-gray-400 font-body">Scale</span>
+                      <span className="text-sm text-white font-body">{result.instrument.scale}</span>
                     </div>
                   )}
                   {result.instrument.material && (
                     <div className="flex justify-between py-2 border-b border-white/[0.04]">
-                      <span className="text-sm text-gray-400 font-vazir">جنس</span>
-                      <span className="text-sm text-white font-vazir">
-                        {result.instrument.material === 'stainless-steel' ? 'استیل ضد زنگ' : result.instrument.material === 'nitrided' ? 'نیترید' : 'سفارشی'}
+                      <span className="text-sm text-gray-400 font-body">Material</span>
+                      <span className="text-sm text-white font-body">
+                        {result.instrument.material === 'stainless-steel' ? 'Stainless Steel' : result.instrument.material === 'nitrided' ? 'Nitrided' : 'Custom'}
                       </span>
                     </div>
                   )}
@@ -119,16 +119,16 @@ export default function LookupPage() {
                 <div className="mt-6">
                   <Link
                     href={`/instruments/${result.instrument.serialNumber}`}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#020617] font-vazir font-medium rounded-xl hover:bg-gray-200 transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#020617] font-body font-medium rounded-xl hover:bg-gray-200 transition-colors"
                   >
-                    مشاهده جزئیات کامل →
+                    View Full Details →
                   </Link>
                 </div>
               </div>
             ) : (
               <div className="text-center py-12 bg-white/[0.02] border border-white/[0.04] rounded-2xl">
-                <p className="text-gray-400 font-vazir text-lg mb-2">هندپنی با سریال «{serial}» یافت نشد</p>
-                <p className="text-sm text-gray-500 font-vazir">لطفاً شماره سریال را بررسی کنید و دوباره امتحان کنید</p>
+                <p className="text-gray-400 font-body text-lg mb-2">No instrument found with serial &laquo;{serial}&raquo;</p>
+                <p className="text-sm text-gray-500 font-body">Please check the serial number and try again</p>
               </div>
             )}
           </motion.div>

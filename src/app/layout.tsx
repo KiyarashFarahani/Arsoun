@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { customFont, vazirmatn } from "@/lib/fonts";
+import { fonts } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "آرسون | Arsoun Soundsculptures",
-  description: "هندپن دست‌ساز با کیفیت بالا | ساخته شده در بندرانزلی، ایران",
+  title: "Arsoun | Soundsculptures",
+  description: "Handcrafted handpans of the highest quality | Made in Bandar-e Anzali, Iran",
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl" className={`${customFont.variable} ${vazirmatn.variable}`}>
+    <html lang="en" dir="ltr" className={fonts}>
       <body className="antialiased">
         {children}
       </body>
