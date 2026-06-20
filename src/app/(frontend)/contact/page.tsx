@@ -26,7 +26,7 @@ const CONTACTS = [
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-slate-900 pt-24 pb-16">
+    <div className="min-h-screen bg-[#020617] pt-24 pb-16">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -37,7 +37,7 @@ export default function ContactPage() {
           <h1 className="text-4xl sm:text-5xl font-siavash font-bold text-white mb-6">
             تماس با ما
           </h1>
-          <div className="w-20 h-1 bg-gradient-to-r from-amber-400 to-orange-400 mx-auto mb-6 rounded-full" />
+          <div className="w-20 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mx-auto mb-6 rounded-full" />
           <p className="text-lg text-gray-400 font-vazir leading-relaxed">
             برای سفارش یا سؤال، از طریق راه‌های زیر با ما در تماس باشید
           </p>
@@ -54,10 +54,10 @@ export default function ContactPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               whileHover={{ x: -4 }}
-              className="flex items-center gap-4 p-6 bg-white/[0.08] border border-white/10 rounded-2xl hover:border-white/20 hover:bg-white/[0.12] transition-all duration-300"
+              className="flex items-center gap-4 p-6 bg-white/[0.04] border border-white/[0.06] rounded-2xl hover:border-white/[0.12] hover:bg-white/[0.06] transition-all duration-300"
             >
-              <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-xl border border-white/10">
-                <contact.icon size={22} className="text-amber-400" />
+              <div className="w-12 h-12 flex items-center justify-center bg-white/[0.04] rounded-xl border border-white/[0.06]">
+                <contact.icon size={22} className="text-gray-300" />
               </div>
               <div>
                 <h3 className="text-sm font-vazir font-semibold text-gray-400 mb-1">{contact.label}</h3>

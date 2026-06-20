@@ -14,17 +14,17 @@ type Category = {
 };
 
 const GRADIENTS = [
-  'from-amber-600/20 via-orange-500/10 to-red-600/20',
-  'from-slate-600/20 via-gray-500/10 to-zinc-600/20',
-  'from-yellow-600/20 via-amber-500/10 to-orange-600/20',
-  'from-stone-600/20 via-gray-500/10 to-neutral-600/20',
+  'from-white/[0.06] via-white/[0.03] to-white/[0.06]',
+  'from-white/[0.04] via-white/[0.02] to-white/[0.05]',
+  'from-white/[0.05] via-white/[0.03] to-white/[0.04]',
+  'from-white/[0.03] via-white/[0.02] to-white/[0.06]',
 ];
 
 const ACCENTS = [
-  'from-amber-400 to-orange-400',
-  'from-slate-400 to-gray-400',
-  'from-yellow-400 to-amber-400',
-  'from-stone-400 to-gray-400',
+  'from-gray-300 to-gray-500',
+  'from-gray-400 to-gray-500',
+  'from-gray-300 to-gray-400',
+  'from-gray-500 to-gray-400',
 ];
 
 const containerVariants = {
@@ -48,20 +48,20 @@ const cardVariants = {
 function LoadingSkeleton() {
   return (
     <section id="products" className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-900" />
+      <div className="absolute inset-0 bg-[#020617]" />
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <div className="h-8 w-32 bg-white/10 rounded-full mx-auto mb-6" />
-          <div className="h-12 w-64 bg-white/10 rounded-lg mx-auto mb-6" />
-          <div className="h-1 w-20 bg-white/10 mx-auto mb-6 rounded-full" />
+          <div className="h-8 w-32 bg-white/[0.04] rounded-full mx-auto mb-6" />
+          <div className="h-12 w-64 bg-white/[0.04] rounded-lg mx-auto mb-6" />
+          <div className="h-1 w-20 bg-white/[0.04] mx-auto mb-6 rounded-full" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-              <div className="h-48 bg-white/5 animate-pulse" />
+            <div key={i} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl overflow-hidden">
+              <div className="h-48 bg-white/[0.03] animate-pulse" />
               <div className="p-6 space-y-4">
-                <div className="h-6 w-3/4 bg-white/10 rounded animate-pulse" />
-                <div className="h-4 w-full bg-white/10 rounded animate-pulse" />
+                <div className="h-6 w-3/4 bg-white/[0.04] rounded animate-pulse" />
+                <div className="h-4 w-full bg-white/[0.04] rounded animate-pulse" />
               </div>
             </div>
           ))}
@@ -82,8 +82,8 @@ function CategoryCard({ category, index }: { category: Category; index: number }
       whileHover={{ y: -8, transition: { duration: 0.3 } }}
       className="group relative h-full flex flex-col"
     >
-      <div className="relative bg-white/[0.08] border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-500 shadow-[0_0_12px_rgba(245,158,11,0.15)] hover:shadow-[0_0_22px_rgba(245,158,11,0.35)] h-full flex flex-col">
-        <Link href={`/products/${category.slug}`} className={`block relative h-48 overflow-hidden ${imageUrl ? 'bg-black/20' : `bg-gradient-to-br ${gradient}`}`}>
+      <div className="relative bg-white/[0.04] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-white/[0.12] transition-all duration-500 shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(0,0,0,0.4)] h-full flex flex-col">
+        <Link href={`/products/${category.slug}`} className={`block relative h-48 overflow-hidden ${imageUrl ? 'bg-black/30' : `bg-gradient-to-br ${gradient}`}`}>
           {imageUrl ? (
             <Image
               src={imageUrl}
@@ -95,10 +95,10 @@ function CategoryCard({ category, index }: { category: Category; index: number }
             />
           ) : (
             <>
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/5 rounded-full" />
-              <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-white/5 rounded-full" />
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/[0.03] rounded-full" />
+              <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-white/[0.03] rounded-full" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${accent} opacity-30 group-hover:opacity-50 group-hover:scale-110 transition-all duration-500`} />
+                <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${accent} opacity-15 group-hover:opacity-25 group-hover:scale-110 transition-all duration-500`} />
               </div>
             </>
           )}
@@ -106,18 +106,18 @@ function CategoryCard({ category, index }: { category: Category; index: number }
 
         <div className="p-6 flex flex-col flex-grow">
           <Link href={`/products/${category.slug}`} className="block mb-2">
-            <h3 className="text-xl font-siavash font-bold text-white group-hover:text-amber-300 transition-colors duration-300">
+            <h3 className="text-xl font-siavash font-bold text-white group-hover:text-gray-200 transition-colors duration-300">
               {category.name}
             </h3>
           </Link>
           {category.description && (
-            <p className="text-sm text-gray-400 font-vazir mb-4 leading-relaxed line-clamp-2 flex-grow">
+            <p className="text-sm text-gray-500 font-vazir mb-4 leading-relaxed line-clamp-2 flex-grow">
               {category.description}
             </p>
           )}
           <Link
             href={`/products/${category.slug}`}
-            className="inline-flex items-center gap-1.5 text-sm font-vazir text-amber-400 hover:text-amber-300 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-vazir text-gray-400 hover:text-gray-200 transition-colors"
           >
             مشاهده محصولات →
           </Link>
@@ -143,9 +143,9 @@ const FeaturedCategories = () => {
 
   return (
     <section id="products" className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-900" />
+      <div className="absolute inset-0 bg-[#020617]" />
 
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-3xl" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-white/[0.015] rounded-full blur-[120px]" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <motion.div
@@ -160,14 +160,14 @@ const FeaturedCategories = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 mb-6 text-sm font-vazir font-medium text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-full"
+            className="inline-block px-4 py-1.5 mb-6 text-sm font-vazir font-medium text-gray-300 bg-white/[0.04] border border-white/[0.08] rounded-full"
           >
             محصولات ما
           </motion.span>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-siavash font-bold text-white mb-6">
             خط تولید
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-amber-400 to-orange-400 mx-auto mb-6 rounded-full" />
+          <div className="w-20 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mx-auto mb-6 rounded-full" />
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto font-vazir leading-relaxed">
             هندپن‌های ما در چهار مدل مختلف تولید می‌شوند
           </p>
@@ -182,7 +182,7 @@ const FeaturedCategories = () => {
         >
           {categories.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-gray-400 font-vazir text-lg">به زودی محصولات اضافه می‌شوند</p>
+              <p className="text-gray-500 font-vazir text-lg">به زودی محصولات اضافه می‌شوند</p>
             </div>
           ) : (
             categories.map((category, index) => (

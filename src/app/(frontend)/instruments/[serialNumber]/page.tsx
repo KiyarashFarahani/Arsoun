@@ -43,12 +43,12 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 pt-24 pb-16">
+      <div className="min-h-screen bg-[#020617] pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse space-y-6">
-            <div className="h-8 w-32 bg-white/10 rounded" />
-            <div className="h-12 w-64 bg-white/10 rounded" />
-            <div className="h-96 bg-white/5 rounded-2xl" />
+            <div className="h-8 w-32 bg-white/[0.04] rounded" />
+            <div className="h-12 w-64 bg-white/[0.04] rounded" />
+            <div className="h-96 bg-white/[0.03] rounded-2xl" />
           </div>
         </div>
       </div>
@@ -57,11 +57,11 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
 
   if (error || !instrument) {
     return (
-      <div className="min-h-screen bg-slate-900 pt-24 pb-16 flex items-center justify-center">
+      <div className="min-h-screen bg-[#020617] pt-24 pb-16 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-siavash font-bold text-white mb-4">یافت نشد</h1>
           <p className="text-gray-400 font-vazir mb-8">هندپنی با سریال {serialNumber} یافت نشد</p>
-          <Link href="/lookup" className="px-6 py-3 bg-amber-500 text-white rounded-full font-vazir hover:bg-amber-400 transition-colors">
+          <Link href="/lookup" className="px-6 py-3 bg-white text-[#020617] rounded-full font-vazir hover:bg-gray-200 transition-colors">
             بازگشت به جستجو
           </Link>
         </div>
@@ -83,7 +83,7 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
   ].filter((spec) => spec.value);
 
   return (
-    <div className="min-h-screen bg-slate-900 pt-24 pb-16">
+    <div className="min-h-screen bg-[#020617] pt-24 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -100,7 +100,7 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
           <h1 className="text-3xl sm:text-4xl font-siavash font-bold text-white mb-2">
             {instrument.title}
           </h1>
-          <p className="text-sm text-gray-500 font-vazir mb-8">سریال: {instrument.serialNumber}</p>
+          <p className="text-sm text-gray-600 font-vazir mb-8">سریال: {instrument.serialNumber}</p>
         </motion.div>
 
         {instrument.images && instrument.images.length > 0 && (
@@ -141,12 +141,12 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="bg-white/[0.08] border border-white/10 rounded-2xl p-6 sm:p-8"
+          className="bg-white/[0.04] border border-white/[0.06] rounded-2xl p-6 sm:p-8"
         >
           <h2 className="text-xl font-siavash font-bold text-white mb-6">مشخصات</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {specs.map((spec) => (
-              <div key={spec.label} className="flex justify-between py-3 border-b border-white/5">
+              <div key={spec.label} className="flex justify-between py-3 border-b border-white/[0.04]">
                 <span className="text-sm text-gray-400 font-vazir">{spec.label}</span>
                 <span className="text-sm text-white font-vazir font-medium">{spec.value}</span>
               </div>
@@ -163,7 +163,7 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
           >
             <Link
               href={`/products/${instrument.category.slug}`}
-              className="text-sm font-vazir text-amber-400 hover:text-amber-300 transition-colors"
+              className="text-sm font-vazir text-gray-400 hover:text-gray-200 transition-colors"
             >
               مشاهده همه {instrument.category.name} ها →
             </Link>

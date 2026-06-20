@@ -33,7 +33,7 @@ const COPYRIGHT_YEAR = new Date().getFullYear();
 
 const Footer = () => {
   return (
-    <footer className="relative bg-[#040a18] border-t border-white/5">
+    <footer className="relative bg-[#010409] border-t border-white/[0.04]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
           <motion.div
@@ -85,7 +85,7 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+                  className="w-10 h-10 flex items-center justify-center bg-white/[0.04] border border-white/[0.06] rounded-xl text-gray-400 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.12] transition-all duration-300"
                   aria-label={social.label}
                 >
                   <social.icon size={18} />
@@ -95,7 +95,7 @@ const Footer = () => {
           </motion.div>
         </div>
 
-        <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="pt-8 border-t border-white/[0.04] flex flex-col sm:flex-row justify-between items-center gap-4">
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -104,7 +104,7 @@ const Footer = () => {
             className="text-xs text-gray-600 font-vazir flex items-center gap-1.5"
           >
             ساخته شده با
-            <Heart size={12} className="text-red-500 fill-red-500" />
+            <Heart size={12} className="text-gray-600 fill-gray-600" />
             توسط تیم آرسون
           </motion.p>
           <motion.p
