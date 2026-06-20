@@ -4,11 +4,10 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const profileImages = [2, 10, 4, 3, 5, 7, 8, 9];
+const profileImages = [1, 2, 3, 4, 5];
 
 const floatClasses = [
-  'hero-float-1', 'hero-float-2', 'hero-float-3', '',
-  'hero-float-4', 'hero-float-5', 'hero-float-6', 'hero-float-7',
+  'hero-float-1', 'hero-float-2', '', 'hero-float-4', 'hero-float-5',
 ];
 
 const Hero = () => {
