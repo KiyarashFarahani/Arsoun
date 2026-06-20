@@ -1,7 +1,8 @@
-import { Space_Grotesk, Outfit } from 'next/font/google';
+import { Raleway, Outfit } from 'next/font/google';
 
-const spaceGrotesk = Space_Grotesk({
+const raleway = Raleway({
   subsets: ['latin'],
+  weight: ['100', '300'],
   variable: '--font-heading',
   display: 'swap',
 });
@@ -12,4 +13,4 @@ const outfit = Outfit({
   display: 'swap',
 });
 
-export const fonts = `${spaceGrotesk.variable} ${outfit.variable}`;
+export const fonts = `${raleway.variable} ${outfit.variable}`;
