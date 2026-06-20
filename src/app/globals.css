@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0f172a;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-siavash: var(--font-siavash);
+  --font-vazir: var(--font-vazir);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-vazir), system-ui, sans-serif;
+}
+
+.font-siavash {
+  font-family: var(--font-siavash), sans-serif;
+}
+
+.font-vazir {
+  font-family: var(--font-vazir), sans-serif;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scrollbar-width: none;
+}
+
+body {
+  -ms-overflow-style: none;
+}
+
+main {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}

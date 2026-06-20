@@ -1,0 +1,38 @@
+{
+  "name": "arsoun",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "payload": "payload --disable-transpile",
+    "payload:generate": "payload generate:types --disable-transpile && payload generate:importmap --disable-transpile",
+    "payload:migrate": "payload migrate --disable-transpile"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "^3.85.1",
+    "@payloadcms/next": "^3.85.1",
+    "@payloadcms/richtext-lexical": "^3.85.1",
+    "framer-motion": "^12.23.12",
+    "graphql": "^17.0.1",
+    "lucide-react": "^0.542.0",
+    "next": "^15.4.11",
+    "payload": "^3.85.1",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
