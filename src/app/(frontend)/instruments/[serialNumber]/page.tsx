@@ -43,7 +43,7 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#020617] pt-24 pb-16">
+      <div className="min-h-screen bg-[#0a0a0a] pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse space-y-6">
             <div className="h-8 w-32 bg-white/[0.04] rounded" />
@@ -57,11 +57,11 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
 
   if (error || !instrument) {
     return (
-      <div className="min-h-screen bg-[#020617] pt-24 pb-16 flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0a0a] pt-24 pb-16 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-heading font-bold text-white mb-4">Not Found</h1>
           <p className="text-gray-400 font-body mb-8">No instrument found with serial {serialNumber}</p>
-          <Link href="/lookup" className="px-6 py-3 bg-white text-[#020617] rounded-full font-body hover:bg-gray-200 transition-colors">
+          <Link href="/lookup" className="px-6 py-3 bg-white text-[#0a0a0a] rounded-full font-body hover:bg-gray-200 transition-colors">
             Back to Lookup
           </Link>
         </div>
@@ -83,7 +83,7 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
   ].filter((spec) => spec.value);
 
   return (
-    <div className="min-h-screen bg-[#020617] pt-24 pb-16">
+    <div className="min-h-screen bg-[#0a0a0a] pt-24 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

@@ -7,7 +7,7 @@ import { ArrowRight, Package } from 'lucide-react';
 const CTA = () => {
   return (
     <section className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#020617] via-slate-900/30 to-[#020617]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-neutral-900/30 to-[#0a0a0a]" />
 
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.02] rounded-full blur-[120px]" />
 
@@ -58,7 +58,7 @@ const CTA = () => {
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/contact"
-              className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-[#020617] font-body font-semibold rounded-full shadow-lg shadow-white/10 hover:bg-gray-200 transition-all duration-300"
+              className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-[#0a0a0a] font-body font-semibold rounded-full shadow-lg shadow-white/10 hover:bg-gray-200 transition-all duration-300"
             >
               Contact Us
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />

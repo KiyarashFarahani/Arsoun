@@ -48,7 +48,7 @@ const cardVariants = {
 function LoadingSkeleton() {
   return (
     <section id="products" className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="absolute inset-0 bg-[#020617]" />
+      <div className="absolute inset-0 bg-[#0a0a0a]" />
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <div className="h-8 w-32 bg-white/[0.04] rounded-full mx-auto mb-6" />
@@ -143,7 +143,7 @@ const FeaturedCategories = () => {
 
   return (
     <section id="products" className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="absolute inset-0 bg-[#020617]" />
+      <div className="absolute inset-0 bg-[#0a0a0a]" />
 
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-white/[0.015] rounded-full blur-[120px]" />
 

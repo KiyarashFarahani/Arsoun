@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#020617] via-slate-900/30 to-[#020617] flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen bg-gradient-to-b from-[#0a0a0a] via-neutral-900/30 to-[#0a0a0a] flex flex-col items-center justify-center px-6">
       <Image
         src="/images/logo/logo.png"
         alt="Arsoun"
@@ -23,7 +23,7 @@ export default function NotFound() {
 
       <Link
         href="/"
-        className="px-8 py-3 bg-white text-[#020617] font-semibold rounded-full hover:bg-gray-200 transition-all duration-300 font-body"
+        className="px-8 py-3 bg-white text-[#0a0a0a] font-semibold rounded-full hover:bg-gray-200 transition-all duration-300 font-body"
       >
         Back to Home
       </Link>

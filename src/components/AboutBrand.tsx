@@ -47,7 +47,7 @@ const itemVariants = {
 const AboutBrand = () => {
   return (
     <section id="about" className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#020617] via-slate-900/20 to-[#020617]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-neutral-900/20 to-[#0a0a0a]" />
 
       <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-white/[0.015] rounded-full blur-[100px] -translate-y-1/2" />
       <div className="absolute top-1/4 right-0 w-[350px] h-[350px] bg-white/[0.01] rounded-full blur-[80px]" />

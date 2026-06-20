@@ -33,7 +33,7 @@ const COPYRIGHT_YEAR = new Date().getFullYear();
 
 const Footer = () => {
   return (
-    <footer className="relative bg-[#010409] border-t border-white/[0.04]">
+    <footer className="relative bg-[#050505] border-t border-white/[0.04]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
           <motion.div

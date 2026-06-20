@@ -1,80 +1,105 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
+
+const profileImages = [2, 10, 4, 3, 5, 7, 8, 9];
+
+const floatClasses = [
+  'hero-float-1', 'hero-float-2', 'hero-float-3', '',
+  'hero-float-4', 'hero-float-5', 'hero-float-6', 'hero-float-7',
+];
 
 const Hero = () => {
   return (
-    <section id="home" className="relative w-full overflow-hidden min-h-screen flex items-center">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#020617] via-slate-900/50 to-[#020617]"></div>
+    <section id="home" className="relative w-full overflow-hidden" style={{ minHeight: '100vh' }}>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-neutral-900 to-[#0a0a0a]"></div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-[30vh] bg-gradient-to-b from-transparent to-[#020617]"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-[20vh] bg-gradient-to-b from-transparent via-[#0a0a0a] to-[#0a0a0a]"></div>
 
-      <div className="absolute inset-0">
-        <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-white/[0.02] rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] bg-white/[0.015] rounded-full blur-[100px]"></div>
-      </div>
+      <div className="relative z-20 flex flex-col lg:flex-row w-full min-h-screen">
 
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24 sm:py-32">
-        <div className="max-w-3xl">
+        {/* Image stack */}
+        <div className="relative w-full lg:w-[55%] h-[60vh] sm:h-[70vh] lg:h-screen lg:sticky lg:top-0 overflow-hidden flex items-center justify-center lg:justify-start lg:pl-24">
+          {profileImages.map((num, i) => (
+            <div
+              key={num}
+              className={`absolute inset-0 flex items-center justify-center lg:justify-start pl-0 sm:pl-8 lg:pl-24 ${floatClasses[i]}`}
+            >
+              <Image
+                src={`/images/profile/${num}.png`}
+                alt={`Handpan ${num}`}
+                width={1200}
+                height={1500}
+                className="object-contain h-[50vh] sm:h-[60vh] lg:h-[90vh] w-auto"
+                sizes="(max-width: 1024px) 90vw, 55vw"
+                priority={i < 2}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Text content */}
+        <div className="relative w-full lg:w-[45%] flex flex-col items-center lg:items-end justify-center px-6 sm:px-8 lg:px-12 xl:px-20 py-12 sm:py-16 lg:py-0">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <span className="inline-block px-4 py-1.5 mb-6 text-sm font-body font-medium text-gray-300 bg-white/[0.04] border border-white/[0.08] rounded-full">
-              Handpan Maker
-            </span>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-5xl sm:text-6xl lg:text-7xl font-heading font-bold text-white mb-6 leading-tight"
+            className="text-center lg:text-right flex flex-col items-center lg:items-end w-full max-w-xl"
           >
-            Arsoun
-            <br />
-            <span className="text-3xl sm:text-4xl lg:text-5xl text-gray-500">Soundsculptures</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-xl sm:text-2xl text-gray-400 mb-8 max-w-2xl leading-relaxed font-body"
-          >
-            Handcrafted handpans of the highest quality
-            <br />
-            <span className="text-lg text-gray-500">
-              Made in Bandar-e Anzali, Iran
-            </span>
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4"
-          >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                href="/products"
-                className="px-8 py-4 bg-white text-[#020617] font-semibold rounded-full hover:bg-gray-200 transition-all duration-300 font-body flex items-center justify-center"
-              >
-                View Products
-              </Link>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-bold text-white mb-6 leading-tight">
+                Arsoun
+                <br />
+                <span className="text-3xl sm:text-4xl lg:text-5xl text-gray-500">Soundsculptures</span>
+              </h1>
+              <div className="w-24 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mx-auto lg:mr-0 mb-8"></div>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                href="/lookup"
-                className="px-8 py-4 border-2 border-white/20 text-white font-semibold rounded-full hover:border-white/40 hover:bg-white/5 transition-all duration-300 font-body flex items-center justify-center"
-              >
-                Serial Lookup
-              </Link>
+
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="text-xl sm:text-2xl text-gray-400 mb-8 max-w-2xl mx-auto lg:mr-0 leading-relaxed font-body"
+            >
+              Handcrafted handpans of the highest quality
+              <br />
+              <span className="text-lg text-gray-500">
+                Made in Bandar-e Anzali, Iran
+              </span>
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.0 }}
+              className="flex flex-row gap-4 justify-center lg:justify-end items-center lg:items-end w-full"
+            >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/products"
+                  className="px-8 py-4 h-14 bg-white text-[#0a0a0a] font-semibold rounded-full hover:bg-gray-200 transition-all duration-300 font-body flex items-center justify-center"
+                >
+                  View Products
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/lookup"
+                  className="px-8 py-4 h-14 border-2 border-white/20 text-white font-semibold rounded-full hover:border-white/40 hover:bg-white/5 transition-all duration-300 font-body flex items-center justify-center"
+                >
+                  Serial Lookup
+                </Link>
+              </motion.div>
             </motion.div>
           </motion.div>
         </div>
+
       </div>
     </section>
   );

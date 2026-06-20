@@ -34,7 +34,7 @@ export default function LookupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#020617] pt-24 pb-16">
+    <div className="min-h-screen bg-[#0a0a0a] pt-24 pb-16">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -71,7 +71,7 @@ export default function LookupPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={loading || !serial.trim()}
-              className="px-6 py-4 bg-white text-[#020617] font-body font-medium rounded-xl hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-4 bg-white text-[#0a0a0a] font-body font-medium rounded-xl hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <Search size={18} />
               {loading ? 'Searching...' : 'Search'}
@@ -119,7 +119,7 @@ export default function LookupPage() {
                 <div className="mt-6">
                   <Link
                     href={`/instruments/${result.instrument.serialNumber}`}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#020617] font-body font-medium rounded-xl hover:bg-gray-200 transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#0a0a0a] font-body font-medium rounded-xl hover:bg-gray-200 transition-colors"
                   >
                     View Full Details →
                   </Link>
