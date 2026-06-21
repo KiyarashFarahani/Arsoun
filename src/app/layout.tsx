@@ -1,6 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { fonts } from "@/lib/fonts";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: "#0a0a0a",
+};
 
 export const metadata: Metadata = {
   title: "Arsoun | Soundsculptures",
