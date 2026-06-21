@@ -12,7 +12,7 @@ const floatClasses = [
 
 const Hero = () => {
   return (
-    <section id="home" className="relative w-full overflow-hidden h-screen lg:h-auto lg:min-h-screen">
+    <section id="home" className="relative w-full lg:overflow-hidden h-screen lg:h-auto lg:min-h-screen">
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-neutral-900 to-[#0a0a0a]"></div>
 
       <div className="absolute bottom-0 left-0 right-0 h-[20vh] bg-gradient-to-b from-transparent via-[#0a0a0a] to-[#0a0a0a]"></div>
@@ -20,7 +20,7 @@ const Hero = () => {
       <div className="relative z-20 flex flex-col justify-center lg:justify-start lg:flex-row-reverse w-full h-screen lg:h-auto lg:min-h-screen">
 
         {/* Image stack */}
-        <div className="relative w-full lg:w-[55%] h-[45vh] sm:h-[70vh] lg:h-screen lg:sticky lg:top-0 overflow-hidden flex items-center justify-center lg:justify-end lg:pr-24">
+        <div className="relative w-full lg:w-[55%] h-[50vh] sm:h-[70vh] lg:h-screen lg:sticky lg:top-0 lg:overflow-hidden flex items-center justify-center lg:justify-end lg:pr-24">
           {profileImages.map((num, i) => (
             <div
               key={num}
@@ -31,8 +31,8 @@ const Hero = () => {
                 alt={`Handpan ${num}`}
                 width={1200}
                 height={1500}
-                className="object-contain h-[40vh] sm:h-[60vh] lg:h-[90vh] w-auto"
-                sizes="(max-width: 1024px) 90vw, 55vw"
+                className="object-contain h-[50vh] sm:h-[60vh] lg:h-[90vh] w-auto origin-center scale-[1.15] sm:scale-105 lg:scale-100"
+                sizes="(max-width: 640px) 120vw, (max-width: 1024px) 90vw, 55vw"
                 priority={i < 2}
               />
             </div>
