@@ -52,10 +52,13 @@ const Hero = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-light text-white mb-6 leading-tight">
-                Arsoun
-                <br />
-                <span className="text-xl sm:text-2xl lg:text-3xl text-gray-500 uppercase mt-2 sm:-mt-4 block">Soundsculptures</span>
+              <h1 className="mb-6">
+                <span className="block hero-gradient-text text-5xl sm:text-6xl lg:text-7xl font-[var(--font-inter)] font-[200] uppercase tracking-[0.5rem] leading-[1.2]">
+                  Arsoun
+                </span>
+                <span className="block hero-gradient-text text-xl sm:text-2xl lg:text-3xl font-[var(--font-inter)] font-[200] uppercase tracking-[0.5rem] leading-[1.2] mt-2 sm:mt-0">
+                  Soundsculptures
+                </span>
               </h1>
               <div className="w-24 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mx-auto lg:ml-0 mb-4 sm:mb-8"></div>
             </motion.div>

@@ -46,6 +46,13 @@ main {
   box-sizing: border-box;
 }
 
+.hero-gradient-text {
+  background: linear-gradient(100deg, #959595, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* Hero floating animations — each layer has unique motion */
 
 /* Slow diagonal drift with gentle tilt */

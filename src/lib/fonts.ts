@@ -1,4 +1,4 @@
-import { Raleway, Outfit } from 'next/font/google';
+import { Raleway, Outfit, Inter } from 'next/font/google';
 
 const raleway = Raleway({
   subsets: ['latin'],
@@ -13,4 +13,11 @@ const outfit = Outfit({
   display: 'swap',
 });
 
-export const fonts = `${raleway.variable} ${outfit.variable}`;
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['200'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+export const fonts = `${raleway.variable} ${outfit.variable} ${inter.variable}`;
