@@ -10,10 +10,7 @@ type Instrument = {
   id: string | number;
   serialNumber: string;
   title: string;
-  scale?: string;
   numberOfNotes?: number;
-  material?: string;
-  status?: string;
   images?: { image: { url: string } }[];
 };
 
@@ -103,11 +100,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                           </div>
                         )}
 
-                        {instrument.status && (
-                          <div className="absolute top-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs font-body text-white/90 border border-white/[0.08]">
-                            {instrument.status === 'available' ? 'Available' : instrument.status === 'sold' ? 'Sold' : 'Reserved'}
-                          </div>
-                        )}
+
                       </div>
 
                       <div className="p-6">
@@ -115,9 +108,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                           {instrument.title}
                         </h2>
                         <div className="space-y-1 text-sm text-gray-500 font-body">
-                          {instrument.scale && <p>Scale: {instrument.scale}</p>}
                           {instrument.numberOfNotes && <p>Notes: {instrument.numberOfNotes}</p>}
-                          {instrument.material && <p>Material: {instrument.material === 'stainless-steel' ? 'Stainless Steel' : instrument.material === 'nitrided' ? 'Nitrided' : 'Custom'}</p>}
                         </div>
                         <div className="mt-4 pt-4 border-t border-white/[0.04]">
                           <span className="text-xs text-gray-600 font-body">Serial: {instrument.serialNumber}</span>

@@ -8,7 +8,7 @@ import { FaSearch } from 'react-icons/fa';
 export default function LookupPage() {
   const [serial, setSerial] = useState('');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ found: boolean; instrument?: { serialNumber: string; title: string; scale?: string; material?: string } } | null>(null);
+  const [result, setResult] = useState<{ found: boolean; instrument?: { serialNumber: string; title: string } } | null>(null);
   const [searched, setSearched] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -101,20 +101,7 @@ export default function LookupPage() {
                     <span className="text-sm text-gray-400 font-body">Serial</span>
                     <span className="text-sm text-white font-body">{result.instrument.serialNumber}</span>
                   </div>
-                  {result.instrument.scale && (
-                    <div className="flex justify-between py-2 border-b border-white/[0.04]">
-                      <span className="text-sm text-gray-400 font-body">Scale</span>
-                      <span className="text-sm text-white font-body">{result.instrument.scale}</span>
-                    </div>
-                  )}
-                  {result.instrument.material && (
-                    <div className="flex justify-between py-2 border-b border-white/[0.04]">
-                      <span className="text-sm text-gray-400 font-body">Material</span>
-                      <span className="text-sm text-white font-body">
-                        {result.instrument.material === 'stainless-steel' ? 'Stainless Steel' : result.instrument.material === 'nitrided' ? 'Nitrided' : 'Custom'}
-                      </span>
-                    </div>
-                  )}
+
                 </div>
                 <div className="mt-6">
                   <Link

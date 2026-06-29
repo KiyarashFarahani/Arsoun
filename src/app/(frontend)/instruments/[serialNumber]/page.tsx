@@ -10,15 +10,12 @@ type Instrument = {
   id: string | number;
   serialNumber: string;
   title: string;
-  scale?: string;
   numberOfNotes?: number;
   notes?: string;
-  material?: string;
   diameter?: string;
   weight?: string;
   thickness?: string;
   dateMade?: string;
-  status?: string;
   price?: number;
   category?: { name: string; slug: string };
   images?: { image: { url: string; alt?: string } }[];
@@ -70,16 +67,13 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
   }
 
   const specs = [
-    { label: 'Scale', value: instrument.scale },
     { label: 'Number of Notes', value: instrument.numberOfNotes?.toString() },
     { label: 'Notes', value: instrument.notes },
-    { label: 'Material', value: instrument.material === 'stainless-steel' ? 'Stainless Steel' : instrument.material === 'nitrided' ? 'Nitrided' : instrument.material === 'custom' ? 'Custom' : instrument.material },
     { label: 'Diameter', value: instrument.diameter },
     { label: 'Weight', value: instrument.weight },
     { label: 'Thickness', value: instrument.thickness },
     { label: 'Date Made', value: instrument.dateMade ? new Date(instrument.dateMade).toLocaleDateString('en-US') : undefined },
-    { label: 'Price', value: instrument.price ? `${instrument.price.toLocaleString('en-US')} Tomans` : undefined },
-    { label: 'Status', value: instrument.status === 'available' ? 'Available' : instrument.status === 'sold' ? 'Sold' : instrument.status === 'reserved' ? 'Reserved' : instrument.status },
+    { label: 'Price', value: instrument.price ? `$${instrument.price.toLocaleString('en-US')}` : undefined },
   ].filter((spec) => spec.value);
 
   return (

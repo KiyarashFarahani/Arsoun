@@ -31,14 +31,6 @@ export const Instruments: CollectionConfig = {
       },
     },
     {
-      name: 'scale',
-      type: 'text',
-      label: 'Scale',
-      admin: {
-        description: 'e.g., D Kurd, C# Annaziska',
-      },
-    },
-    {
       name: 'numberOfNotes',
       type: 'number',
       label: 'Number of Notes',
@@ -50,18 +42,6 @@ export const Instruments: CollectionConfig = {
       label: 'Notes',
       admin: {
         description: 'Individual note names, comma-separated',
-      },
-    },
-    {
-      name: 'material',
-      type: 'select',
-      options: [
-        { label: 'Stainless Steel', value: 'stainless-steel' },
-        { label: 'Nitrided', value: 'nitrided' },
-        { label: 'Custom', value: 'custom' },
-      ],
-      admin: {
-        position: 'sidebar',
       },
     },
     {
@@ -120,20 +100,7 @@ export const Instruments: CollectionConfig = {
       type: 'number',
       min: 0,
       admin: {
-        description: 'Price in Tomans (optional)',
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'status',
-      type: 'select',
-      defaultValue: 'available',
-      options: [
-        { label: 'Available', value: 'available' },
-        { label: 'Sold', value: 'sold' },
-        { label: 'Reserved', value: 'reserved' },
-      ],
-      admin: {
+        description: 'Price in $ (optional)',
         position: 'sidebar',
       },
     },
@@ -144,6 +111,16 @@ export const Instruments: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description: 'Show on homepage',
+      },
+    },
+    {
+      name: 'isDisplayed',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description:
+          'Show this instrument on the website (category pages, listings). Unchecked = lookup-only.',
       },
     },
   ],

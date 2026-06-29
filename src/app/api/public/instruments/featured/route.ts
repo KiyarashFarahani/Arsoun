@@ -9,7 +9,7 @@ export async function GET() {
     const instruments = await payload.find({
       collection: 'instruments',
       depth: 1,
-      where: { isFeatured: { equals: true } },
+      where: { and: [{ isFeatured: { equals: true } }, { isDisplayed: { equals: true } }] },
       limit: 6,
       sort: '-dateMade',
     })

@@ -9,7 +9,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const categorySlug = searchParams.get('category')
 
-    let where: Where | undefined
+    const where: Where = { isDisplayed: { equals: true } }
 
     if (categorySlug) {
       const categoryResult = await payload.find({
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
       }
 
       const categoryId = categoryResult.docs[0].id
-      where = { category: { equals: categoryId } }
+      where.and = [{ category: { equals: categoryId } }, { isDisplayed: { equals: true } }]
     }
 
     const instruments = await payload.find({

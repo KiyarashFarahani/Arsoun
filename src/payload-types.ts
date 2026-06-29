@@ -188,16 +188,11 @@ export interface Instrument {
   serialNumber: string;
   title: string;
   category: number | Category;
-  /**
-   * e.g., D Kurd, C# Annaziska
-   */
-  scale?: string | null;
   numberOfNotes?: number | null;
   /**
    * Individual note names, comma-separated
    */
   notes?: string | null;
-  material?: ('stainless-steel' | 'nitrided' | 'custom') | null;
   /**
    * e.g., 53 cm
    */
@@ -236,14 +231,17 @@ export interface Instrument {
       }[]
     | null;
   /**
-   * Price in Tomans (optional)
+   * Price in $ (optional)
    */
   price?: number | null;
-  status?: ('available' | 'sold' | 'reserved') | null;
   /**
    * Show on homepage
    */
   isFeatured?: boolean | null;
+  /**
+   * Show this instrument on the website (category pages, listings). Unchecked = lookup-only.
+   */
+  isDisplayed?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -372,10 +370,8 @@ export interface InstrumentsSelect<T extends boolean = true> {
   serialNumber?: T;
   title?: T;
   category?: T;
-  scale?: T;
   numberOfNotes?: T;
   notes?: T;
-  material?: T;
   diameter?: T;
   weight?: T;
   thickness?: T;
@@ -388,8 +384,8 @@ export interface InstrumentsSelect<T extends boolean = true> {
         id?: T;
       };
   price?: T;
-  status?: T;
   isFeatured?: T;
+  isDisplayed?: T;
   updatedAt?: T;
   createdAt?: T;
 }
