@@ -1,26 +1,26 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Ruler, Weight, Music, Shield } from 'lucide-react';
+import { FaRuler, FaWeight, FaMusic, FaShieldAlt } from 'react-icons/fa';
 
 const FEATURES = [
   {
-    icon: Ruler,
+    icon: FaRuler,
     title: '53 cm Diameter',
     description: 'Standard handpan size',
   },
   {
-    icon: Weight,
+    icon: FaWeight,
     title: 'Lightweight',
     description: 'Approx. 4.5 kg',
   },
   {
-    icon: Music,
+    icon: FaMusic,
     title: 'Various Scales',
     description: 'D Kurd, C# Annaziska & custom',
   },
   {
-    icon: Shield,
+    icon: FaShieldAlt,
     title: '2-Year Warranty',
     description: 'Free retuning if needed',
   },

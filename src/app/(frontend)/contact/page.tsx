@@ -1,26 +1,27 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { Instagram, Phone, MessageCircle } from 'lucide-react';
+import { motion } from "framer-motion";
+import { FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { FiPhone } from "react-icons/fi";
 
 const CONTACTS = [
   {
-    icon: Instagram,
-    label: 'Instagram',
-    value: '@arsoun',
-    href: 'https://instagram.com/arsoun',
+    icon: FaInstagram,
+    label: "Instagram",
+    value: "@arsoun_soundsculptures",
+    href: "https://instagram.com/arsoun_soundsculptures",
   },
   {
-    icon: Phone,
-    label: 'Phone',
-    value: '+98 912 345 6789',
-    href: 'tel:+989123456789',
+    icon: FiPhone,
+    label: "Phone",
+    value: "+98 921 653 1511",
+    href: "tel:+989216531511",
   },
   {
-    icon: MessageCircle,
-    label: 'WhatsApp',
-    value: '+98 912 345 6789',
-    href: 'https://wa.me/989123456789',
+    icon: FaWhatsapp,
+    label: "WhatsApp",
+    value: "+98 921 653 1511",
+    href: "https://wa.me/989216531511",
   },
 ];
 
@@ -60,8 +61,12 @@ export default function ContactPage() {
                 <contact.icon size={22} className="text-gray-300" />
               </div>
               <div>
-                <h3 className="text-sm font-body font-semibold text-gray-400 mb-1">{contact.label}</h3>
-                <p className="text-lg font-body text-white" dir="ltr">{contact.value}</p>
+                <h3 className="text-sm font-body font-semibold text-gray-400 mb-1">
+                  {contact.label}
+                </h3>
+                <p className="text-lg font-body text-white" dir="ltr">
+                  {contact.value}
+                </p>
               </div>
             </motion.a>
           ))}

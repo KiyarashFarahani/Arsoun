@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { FaSearch } from 'react-icons/fa';
 
 export default function LookupPage() {
   const [serial, setSerial] = useState('');
@@ -73,7 +73,7 @@ export default function LookupPage() {
               disabled={loading || !serial.trim()}
               className="px-6 py-4 bg-white text-[#0a0a0a] font-body font-medium rounded-xl hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              <Search size={18} />
+              <FaSearch size={18} />
               {loading ? 'Searching...' : 'Search'}
             </motion.button>
           </div>

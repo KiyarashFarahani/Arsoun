@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, Package } from 'lucide-react';
+import { FaArrowRight, FaBox } from 'react-icons/fa';
 
 const CTA = () => {
   return (
@@ -20,7 +20,7 @@ const CTA = () => {
           className="mb-8"
         >
           <div className="inline-flex items-center justify-center w-16 h-16 bg-white/[0.04] rounded-2xl border border-white/[0.08]">
-            <Package size={28} className="text-gray-300" />
+            <FaBox size={28} className="text-gray-300" />
           </div>
         </motion.div>
 
@@ -61,7 +61,7 @@ const CTA = () => {
               className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-[#0a0a0a] font-body font-semibold rounded-full shadow-lg shadow-white/10 hover:bg-gray-200 transition-all duration-300"
             >
               Contact Us
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
+              <FaArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
