@@ -24,15 +24,16 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const [categoryName, setCategoryName] = useState('');
 
   useEffect(() => {
-    fetch(`/api/public/instruments?category=${slug}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setInstruments(data.instruments || []);
-        if (data.instruments?.length > 0 && data.instruments[0].category) {
-          setCategoryName(data.instruments[0].category.name || slug);
-        } else {
-          setCategoryName(slug);
-        }
+    Promise.all([
+      fetch(`/api/public/instruments?category=${slug}`).then((res) => res.json()),
+      fetch(`/api/public/categories`).then((res) => res.json()),
+    ])
+      .then(([instrumentsData, categoriesData]) => {
+        setInstruments(instrumentsData.instruments || []);
+        const category = categoriesData.categories?.find(
+          (c: { slug: string }) => c.slug === slug,
+        );
+        setCategoryName(category?.name || slug);
       })
       .catch(() => setInstruments([]))
       .finally(() => setLoading(false));

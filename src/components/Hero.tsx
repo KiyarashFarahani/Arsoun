@@ -15,6 +15,7 @@ const Hero = () => {
           className="object-cover object-[position:50%_center] lg:object-center"
           priority
           sizes="100vw"
+          unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent lg:from-transparent"></div>
       </div>

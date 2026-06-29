@@ -1,17 +1,35 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import type { Where } from 'payload'
 
 export async function GET(request: Request) {
   try {
     const payload = await getPayload({ config })
     const { searchParams } = new URL(request.url)
-    const category = searchParams.get('category')
+    const categorySlug = searchParams.get('category')
+
+    let where: Where | undefined
+
+    if (categorySlug) {
+      const categoryResult = await payload.find({
+        collection: 'categories',
+        where: { slug: { equals: categorySlug } },
+        limit: 1,
+      })
+
+      if (categoryResult.docs.length === 0) {
+        return NextResponse.json({ instruments: [] })
+      }
+
+      const categoryId = categoryResult.docs[0].id
+      where = { category: { equals: categoryId } }
+    }
 
     const instruments = await payload.find({
       collection: 'instruments',
       depth: 1,
-      where: category ? { category: { equals: category } } : undefined,
+      where,
       sort: '-dateMade',
     })
 
