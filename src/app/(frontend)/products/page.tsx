@@ -48,10 +48,10 @@ export default function ProductsPage() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl sm:text-5xl font-heading font-bold text-white mb-6">
+          <h1 className="hero-gradient-text font-[var(--font-inter)] font-[100] tracking-[0.25rem] leading-[1.2] text-4xl sm:text-5xl mb-6">
             Our Products
           </h1>
-          <div className="w-20 h-1 bg-gradient-to-r from-gray-300 to-gray-500 mx-auto mb-6 rounded-full" />
+          <div className="w-20 h-1 bg-gradient-to-r from-gray-300/40 to-white/40 mx-auto mb-6 rounded-full" />
           <p className="text-lg text-gray-400 max-w-2xl mx-auto font-body leading-relaxed">
             Handcrafted handpans available in four product lines
           </p>

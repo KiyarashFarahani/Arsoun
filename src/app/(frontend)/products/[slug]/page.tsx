@@ -50,10 +50,10 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
           <Link href="/products" className="inline-flex items-center gap-2 text-sm font-body text-gray-400 hover:text-white transition-colors mb-6">
             ← Back to Products
           </Link>
-          <h1 className="text-4xl sm:text-5xl font-heading font-bold text-white mb-4">
+          <h1 className="hero-gradient-text font-[var(--font-inter)] font-[100] tracking-[0.25rem] leading-[1.2] text-4xl sm:text-5xl mb-4">
             {categoryName || slug}
           </h1>
-          <div className="w-20 h-1 bg-gradient-to-r from-gray-300 to-gray-500 rounded-full" />
+          <div className="w-20 h-1 bg-gradient-to-r from-gray-300/40 to-white/40 rounded-full" />
         </motion.div>
 
         {loading ? (

@@ -59,7 +59,7 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
     return (
       <div className="min-h-screen bg-[#0a0a0a] pt-24 pb-16 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-heading font-bold text-white mb-4">Not Found</h1>
+          <h1 className="hero-gradient-text font-[var(--font-inter)] font-[100] tracking-[0.25rem] leading-[1.2] text-4xl mb-4">Not Found</h1>
           <p className="text-gray-400 font-body mb-8">No instrument found with serial {serialNumber}</p>
           <Link href="/lookup" className="px-6 py-3 bg-white text-[#0a0a0a] rounded-full font-body hover:bg-gray-200 transition-colors">
             Back to Lookup
@@ -97,7 +97,7 @@ export default function InstrumentDetailPage({ params }: { params: Promise<{ ser
             ← Back
           </Link>
 
-          <h1 className="text-3xl sm:text-4xl font-heading font-bold text-white mb-2">
+          <h1 className="hero-gradient-text font-[var(--font-inter)] font-[100] tracking-[0.25rem] leading-[1.2] text-3xl sm:text-4xl mb-2">
             {instrument.title}
           </h1>
           <p className="text-sm text-gray-600 font-body mb-8">Serial: {instrument.serialNumber}</p>
