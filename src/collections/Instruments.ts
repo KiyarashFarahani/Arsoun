@@ -91,7 +91,7 @@ export const Instruments: CollectionConfig = {
           name: 'image',
           type: 'upload',
           relationTo: 'media',
-          required: true,
+      required: false,
         },
       ],
     },
