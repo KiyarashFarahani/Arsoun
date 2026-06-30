@@ -115,12 +115,7 @@ export default function ProductsPage() {
                         <h2 className="text-xl font-heading font-bold text-white group-hover:text-gray-200 transition-colors duration-300 mb-2">
                           {category.name}
                         </h2>
-                        {category.description && (
-                          <p className="text-sm text-gray-500 font-body mb-4 leading-relaxed flex-grow">
-                            {category.description}
-                          </p>
-                        )}
-                        <span className="inline-flex items-center gap-1.5 text-sm font-body text-gray-400 group-hover:text-gray-200 transition-colors">
+                        <span className="inline-flex items-center gap-1.5 text-sm font-body text-gray-400 group-hover:text-gray-200 transition-colors mt-auto">
                           View products →
                         </span>
                       </div>

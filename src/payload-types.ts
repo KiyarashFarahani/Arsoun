@@ -226,7 +226,7 @@ export interface Instrument {
    */
   images?:
     | {
-        image: number | Media;
+        image?: (number | null) | Media;
         id?: string | null;
       }[]
     | null;

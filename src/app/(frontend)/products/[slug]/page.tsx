@@ -20,6 +20,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryName, setCategoryName] = useState('');
+  const [categoryDescription, setCategoryDescription] = useState('');
 
   useEffect(() => {
     Promise.all([
@@ -32,6 +33,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
           (c: { slug: string }) => c.slug === slug,
         );
         setCategoryName(category?.name || slug);
+        setCategoryDescription(category?.description || '');
       })
       .catch(() => setInstruments([]))
       .finally(() => setLoading(false));
@@ -53,6 +55,11 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             {categoryName || slug}
           </h1>
           <div className="w-20 h-1 bg-gradient-to-r from-gray-300/40 to-white/40 rounded-full" />
+          {categoryDescription && (
+            <p className="mt-6 text-lg text-gray-400 max-w-2xl font-body leading-relaxed">
+              {categoryDescription}
+            </p>
+          )}
         </motion.div>
 
         {loading ? (
