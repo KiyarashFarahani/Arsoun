@@ -11,6 +11,7 @@ type Instrument = {
   serialNumber: string;
   title: string;
   numberOfNotes?: number;
+  price?: number;
   images?: { image: { url: string } }[];
 };
 
@@ -104,14 +105,21 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                       </div>
 
                       <div className="p-6">
-                        <h2 className="text-lg font-heading font-bold text-white group-hover:text-gray-200 transition-colors duration-300 mb-2">
-                          {instrument.title}
-                        </h2>
+                        <div className="flex items-start justify-between gap-3 mb-2">
+                          <h2 className="text-lg font-heading font-bold text-white group-hover:text-gray-200 transition-colors duration-300">
+                            {instrument.title}
+                          </h2>
+                          {instrument.price != null && instrument.price > 0 && (
+                            <span className="text-base font-heading font-bold text-white shrink-0">
+                              ${instrument.price.toLocaleString('en-US')}
+                            </span>
+                          )}
+                        </div>
                         <div className="space-y-1 text-sm text-gray-500 font-body">
                           {instrument.numberOfNotes && <p>Notes: {instrument.numberOfNotes}</p>}
                         </div>
-                        <div className="mt-4 pt-4 border-t border-white/[0.04]">
-                          <span className="text-xs text-gray-600 font-body">Serial: {instrument.serialNumber}</span>
+                        <div className="mt-2 text-xs text-gray-600 font-body">
+                          Serial: {instrument.serialNumber}
                         </div>
                       </div>
                     </div>
