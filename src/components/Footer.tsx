@@ -1,19 +1,23 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { FaHeart, FaInstagram, FaWhatsapp } from 'react-icons/fa';
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 const FOOTER_LINKS = [
-  { label: 'Home', href: '/' },
-  { label: 'Products', href: '/products' },
-  { label: 'Serial Lookup', href: '/lookup' },
-  { label: 'Contact', href: '/contact' },
+  { label: "Home", href: "/" },
+  { label: "Products", href: "/products" },
+  { label: "Serial Lookup", href: "/lookup" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const SOCIAL_LINKS = [
-  { icon: FaInstagram, href: 'https://instagram.com/arsoun_soundsculptures', label: 'Instagram' },
-  { icon: FaWhatsapp, href: 'https://wa.me/989216531511', label: 'WhatsApp' },
+  {
+    icon: FaInstagram,
+    href: "https://instagram.com/arsoun_soundsculptures",
+    label: "Instagram",
+  },
+  { icon: FaWhatsapp, href: "https://wa.me/989216531511", label: "WhatsApp" },
 ];
 
 const COPYRIGHT_YEAR = new Date().getFullYear();
@@ -29,9 +33,12 @@ const Footer = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-2xl font-heading font-bold text-white mb-3">Arsoun</h3>
+            <h3 className="text-2xl font-heading font-bold text-white mb-3">
+              Arsoun
+            </h3>
             <p className="text-sm text-gray-500 font-body leading-relaxed max-w-xs">
-              Crafting premium handcrafted handpans. Each instrument is made with precision and love.
+              Crafting premium handcrafted handpans. Each instrument is made
+              with precision and love.
             </p>
           </motion.div>
 
@@ -41,7 +48,9 @@ const Footer = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <h4 className="text-sm font-body font-semibold text-gray-400 mb-4 uppercase tracking-wider">Links</h4>
+            <h4 className="text-sm font-body font-semibold text-gray-400 mb-4 uppercase tracking-wider">
+              Links
+            </h4>
             <ul className="space-y-2.5">
               {FOOTER_LINKS.map((link) => (
                 <li key={link.label}>
@@ -62,7 +71,9 @@ const Footer = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <h4 className="text-sm font-body font-semibold text-gray-400 mb-4 uppercase tracking-wider">Follow Us</h4>
+            <h4 className="text-sm font-body font-semibold text-gray-400 mb-4 uppercase tracking-wider">
+              Follow Us
+            </h4>
             <div className="flex gap-3">
               {SOCIAL_LINKS.map((social) => (
                 <motion.a
@@ -90,9 +101,7 @@ const Footer = () => {
             viewport={{ once: true }}
             className="text-xs text-gray-600 font-body flex items-center gap-1.5"
           >
-            Made with
-            <FaHeart size={12} className="text-gray-600 fill-gray-600" />
-            by the Arsoun team
+            Made by Kiyarash Farahani
           </motion.p>
           <motion.p
             initial={{ opacity: 0 }}
