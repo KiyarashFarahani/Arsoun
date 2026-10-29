@@ -7,6 +7,7 @@ import { FaInstagram, FaWhatsapp } from "react-icons/fa";
 const FOOTER_LINKS = [
   { label: "Home", href: "/" },
   { label: "Products", href: "/products" },
+  { label: "Play handpan", href: "/play" },
   { label: "Serial Lookup", href: "/lookup" },
   { label: "Contact", href: "/contact" },
 ];

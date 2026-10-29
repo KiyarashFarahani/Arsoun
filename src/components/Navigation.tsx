@@ -9,6 +9,7 @@ import { useSplash } from '@/contexts/SplashContext';
 const navItems = [
   { name: 'Home', href: '/' },
   { name: 'Products', href: '/products' },
+  { name: 'Play', href: '/play' },
   { name: 'Serial Lookup', href: '/lookup' },
   { name: 'Contact', href: '/contact' },
 ];
@@ -47,7 +48,7 @@ const Navigation = () => {
             <Link
               key={item.name}
               href={item.href}
-              className={`relative px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-body font-medium transition-colors duration-200 whitespace-nowrap ${
+              className={`relative px-2 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-body font-medium transition-colors duration-200 whitespace-nowrap ${
                 isActive
                   ? 'text-white'
                   : 'text-white/60 hover:text-white/90'
