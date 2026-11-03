@@ -5,6 +5,10 @@ import type {
   RingConfig,
   Vec2,
 } from "./types";
+import {
+  DEFAULT_NOTE_ELLIPSE_SIZE,
+  NOTE_ELLIPSE_SIZES,
+} from "./note-sizes";
 
 const TWO_PI = Math.PI * 2;
 
@@ -161,6 +165,50 @@ export function fieldStats(field: PanField): { x: number; y: number; r: number }
   return { x, y, r };
 }
 
+function resizeCustomFields(fields: PanField[]): PanField[] {
+  const sizes = fields.map((field) => {
+    const size = NOTE_ELLIPSE_SIZES[field.note] ?? DEFAULT_NOTE_ELLIPSE_SIZE;
+    return { field, size };
+  });
+
+  // Keep the measured proportions, but scale the complete layout to the
+  // largest common size that leaves a small clearance between every field.
+  let scale = 1;
+  for (let left = 0; left < sizes.length; left += 1) {
+    for (let right = left + 1; right < sizes.length; right += 1) {
+      if (sizes[left].field.side !== sizes[right].field.side) continue;
+      const [x1, y1] = sizes[left].field.centre;
+      const [x2, y2] = sizes[right].field.centre;
+      const distance = Math.hypot(x2 - x1, y2 - y1);
+      const leftReach = Math.max(
+        sizes[left].size.radial,
+        sizes[left].size.tangential,
+      );
+      const rightReach = Math.max(
+        sizes[right].size.radial,
+        sizes[right].size.tangential,
+      );
+      scale = Math.min(scale, (distance * 0.94) / (leftReach + rightReach));
+    }
+  }
+
+  return sizes.map(({ field, size }) => {
+    const angle = Math.atan2(field.centre[1], field.centre[0]);
+    const boundary = ellipseBoundary(
+      field.centre,
+      1,
+      angle,
+      size.radial * scale,
+      size.tangential * scale,
+    );
+    return {
+      ...field,
+      boundary,
+      inner: scalePolygon(boundary, 0.52, field.centre),
+    };
+  });
+}
+
 /** Project a y-up coordinate into SVG space, matching the root transform. */
 export function projectPoint(
   x: number,
@@ -223,8 +271,13 @@ export function retuneDefinition(template: PanDefinition, topNotes: string[], bo
 
 /** Compose independently measured top and bottom shells for custom layouts. */
 export function retuneSides(topTemplate: PanDefinition, bottomTemplate: PanDefinition, topNotes: string[], bottomNotes: string[], ding = "D3"): PanDefinition {
-  const topFields = topTemplate.fields.filter(f => f.side !== "bottom").map(f => ({ ...f, centre: [...f.centre] as Vec2, boundary: f.boundary.map(([x,y]) => [x,y] as Vec2), inner: f.inner?.map(([x,y]) => [x,y] as Vec2) }));
-  const bottomFields = bottomTemplate.fields.filter(f => f.side === "bottom").map(f => ({ ...f, centre: [...f.centre] as Vec2, boundary: f.boundary.map(([x,y]) => [x,y] as Vec2), inner: f.inner?.map(([x,y]) => [x,y] as Vec2) }));
+  topNotes = topNotes.slice(0, 12);
+  bottomNotes = bottomNotes.slice(0, 6);
+  const clone = (field: PanField) => ({ ...field, centre: [...field.centre] as Vec2, boundary: field.boundary.map(([x, y]) => [x, y] as Vec2), inner: field.inner?.map(([x, y]) => [x, y] as Vec2) });
+  const topSource = topTemplate.fields.filter((field) => field.side !== "bottom");
+  const topDing = topSource.find((field) => field.note === topTemplate.notes?.ding) ?? topSource[0];
+  const topFields = [topDing, ...topSource.filter((field) => field !== topDing).slice(0, topNotes.length)].filter(Boolean).map(clone);
+  const bottomFields = bottomTemplate.fields.filter((field) => field.side === "bottom").slice(0, bottomNotes.length).map(clone);
   // Extend measured templates when a requested count exceeds their sample.
   const topNeeded = Math.max(0, topNotes.length - topFields.filter(f => f.note !== topTemplate.notes?.ding).length);
   for (let i = 0; i < topNeeded; i++) {
@@ -242,6 +295,6 @@ export function retuneSides(topTemplate: PanDefinition, bottomTemplate: PanDefin
   }
   let ti = 0; topFields.forEach(f => { f.note = f.note === topTemplate.notes?.ding ? ding : (topNotes[ti++] ?? f.note); });
   let bi = 0; bottomFields.forEach(f => { f.note = bottomNotes[bi++] ?? f.note; });
-  const fields = [...topFields, ...bottomFields];
+  const fields = resizeCustomFields([...topFields, ...bottomFields]);
   return { ...topTemplate, meta: { ...topTemplate.meta, id: `custom-${topNotes.length + 1}-${bottomNotes.length}`, model: `Custom ${topNotes.length + 1}/${bottomNotes.length}` }, fields, notes: { ding, top: topFields.filter(f => f.note !== ding).map(f => f.note), bottom: bottomFields.map(f => f.note) } };
 }

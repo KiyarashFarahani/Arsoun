@@ -15,6 +15,8 @@ import {
 
 const THEME_NAMES = Object.keys(PAN_THEMES) as PanThemeName[];
 const CUSTOM_NOTES = ["D3", "E3", "F3", "G3", "A3", "Bb3", "C4", "D4", "E4", "F4", "G4", "A4", "Bb4", "C5", "D5", "E5", "F5", "G5", "A5", "Bb5", "C6", "D6", "E6", "F6", "G6", "A6", "Bb6", "C7", "D7", "E7", "F7", "G7", "A7", "Bb7"];
+const MAX_CUSTOM_TOP = 13;
+const MAX_CUSTOM_BOTTOM = 6;
 
 function sortByPitch(notes: string[]) {
   return [...notes].sort(
@@ -41,7 +43,7 @@ export default function HandpanPlayer() {
   const isCustom = modelId === "custom";
   const customDefinition = useMemo(() => {
     const top = CUSTOM_NOTES.slice(1, customTopCount);
-    const bottom = CUSTOM_NOTES.slice(0, customBottomCount);
+    const bottom = CUSTOM_NOTES.slice(customTopCount, customTopCount + customBottomCount);
     const preferred = ["c-ashakiran-17", "d-kurd-19", "fis-kurd-22", "e-amara-20", "b3-pygmy-20", "d-aegean-18", "d-kurd-13"];
     const byCount = (side: "top" | "bottom", count: number) => PAN_MODELS
       .filter((m) => (m.definition.notes?.[side]?.length ?? 0) > 0)
@@ -224,8 +226,8 @@ export default function HandpanPlayer() {
 
             {isCustom ? (
               <div className="mt-4 space-y-4">
-                <div><span className="font-body text-xs text-white/45">Top notes (including ding)</span><div className="mt-2 flex flex-wrap gap-2">{Array.from({length:17},(_,i)=>i+9).map(count => { const ok=true; return <button type="button" key={count} disabled={!ok} aria-pressed={customTopCount===count} onClick={()=>setCustomTopCount(count)} className={`rounded-full border px-3 py-2 text-xs ${customTopCount===count ? "border-[#d6a86b] bg-[#d6a86b] text-black" : ok ? "border-white/15 text-white/65" : "border-white/5 text-white/20"}`}>{count}</button>})}</div></div>
-                <div><span className="font-body text-xs text-white/45">Bottom notes</span><div className="mt-2 flex flex-wrap gap-2">{Array.from({length:13},(_,i)=>i).map(count => { const ok=true; return <button type="button" key={count} disabled={!ok} aria-pressed={customBottomCount===count} onClick={()=>setCustomBottomCount(count)} className={`rounded-full border px-3 py-2 text-xs ${customBottomCount===count ? "border-[#d6a86b] bg-[#d6a86b] text-black" : ok ? "border-white/15 text-white/65" : "border-white/5 text-white/20"}`}>{count}</button>})}</div></div>
+                 <div><span className="font-body text-xs text-white/45">Top notes (including ding)</span><div className="mt-2 flex flex-wrap gap-2">{Array.from({ length: MAX_CUSTOM_TOP - 8 }, (_, i) => i + 9).map((count) => <button type="button" key={count} aria-pressed={customTopCount === count} onClick={() => setCustomTopCount(count)} className={`rounded-full border px-3 py-2 text-xs ${customTopCount === count ? "border-[#d6a86b] bg-[#d6a86b] text-black" : "border-white/15 text-white/65"}`}>{count}</button>)}</div></div>
+                 <div><span className="font-body text-xs text-white/45">Bottom notes</span><div className="mt-2 flex flex-wrap gap-2">{Array.from({ length: MAX_CUSTOM_BOTTOM + 1 }, (_, count) => <button type="button" key={count} aria-pressed={customBottomCount === count} onClick={() => setCustomBottomCount(count)} className={`rounded-full border px-3 py-2 text-xs ${customBottomCount === count ? "border-[#d6a86b] bg-[#d6a86b] text-black" : "border-white/15 text-white/65"}`}>{count}</button>)}</div></div>
               </div>
             ) : null}
 
