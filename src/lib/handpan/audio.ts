@@ -29,17 +29,36 @@ export function noteToFrequency(note: string): number | null {
 
 interface Voice {
   gain: GainNode;
-  oscillators: OscillatorNode[];
+  source: AudioBufferSourceNode;
 }
 
-/**
- * Small additive synthesizer used by the demo. Real instruments will load
- * per-note recordings, but this keeps the player playable with no assets.
- */
+const AUDIO_NOTE_NAMES = [
+  "C",
+  "Csharp",
+  "D",
+  "Dsharp",
+  "E",
+  "F",
+  "Fsharp",
+  "G",
+  "Gsharp",
+  "A",
+  "Bb",
+  "B",
+];
+
+function noteSampleUrl(note: string) {
+  const midi = noteToMidi(note);
+  if (midi === null) return null;
+  const octave = Math.floor(midi / 12) - 1;
+  return `/audio/handpan/${AUDIO_NOTE_NAMES[midi % 12]}${octave}.mp3`;
+}
+
 export class PanSynth {
   private context: AudioContext | null = null;
   private master: GainNode | null = null;
   private voices = new Map<string, Voice[]>();
+  private buffers = new Map<string, Promise<AudioBuffer | null>>();
   private enabled = true;
 
   setEnabled(enabled: boolean) {
@@ -80,97 +99,52 @@ export class PanSynth {
     return this.context;
   }
 
-  private noiseBurst(context: AudioContext, duration: number): AudioBufferSourceNode {
-    const length = Math.max(1, Math.floor(context.sampleRate * duration));
-    const buffer = context.createBuffer(1, length, context.sampleRate);
-    const data = buffer.getChannelData(0);
+  private loadBuffer(note: string, context: AudioContext) {
+    const url = noteSampleUrl(note);
+    if (!url) return Promise.resolve(null);
 
-    for (let i = 0; i < length; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 3);
-    }
+    const cached = this.buffers.get(note);
+    if (cached) return cached;
 
-    const source = context.createBufferSource();
-    source.buffer = buffer;
-    return source;
+    const buffer = fetch(url)
+      .then((response) => (response.ok ? response.arrayBuffer() : null))
+      .then((data) => (data ? context.decodeAudioData(data) : null))
+      .catch(() => null);
+    this.buffers.set(note, buffer);
+    return buffer;
   }
 
   strike(note: string, velocity = 1) {
     if (!this.enabled) return;
 
-    const frequency = noteToFrequency(note);
     const context = this.ensureContext();
-    if (!frequency || !context || !this.master) return;
+    if (!context || !this.master) return;
 
-    const now = context.currentTime;
-    const out = context.createGain();
-    const filter = context.createBiquadFilter();
+    void this.loadBuffer(note, context).then((buffer) => {
+      if (!buffer || !this.enabled || !this.context || !this.master) return;
 
-    filter.type = "lowpass";
-    filter.frequency.setValueAtTime(Math.min(14000, frequency * 7), now);
-    filter.Q.value = 0.4;
+      const source = this.context.createBufferSource();
+      const gain = this.context.createGain();
+      const now = this.context.currentTime;
 
-    out.gain.setValueAtTime(0.0001, now);
-    out.gain.linearRampToValueAtTime(0.9 * velocity, now + 0.006);
-    out.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
+      source.buffer = buffer;
+      gain.gain.setValueAtTime(Math.max(0.0001, velocity), now);
+      source.connect(gain);
+      gain.connect(this.master);
+      source.start(now);
 
-    out.connect(filter);
-    filter.connect(this.master);
-
-    const partials = [
-      { ratio: 1, gain: 0.55, decay: 2.2, type: "sine" as OscillatorType },
-      { ratio: 2.01, gain: 0.22, decay: 1.4, type: "sine" as OscillatorType },
-      { ratio: 3.02, gain: 0.11, decay: 0.95, type: "sine" as OscillatorType },
-      { ratio: 4.42, gain: 0.05, decay: 0.6, type: "triangle" as OscillatorType },
-    ];
-
-    const oscillators: OscillatorNode[] = [];
-
-    partials.forEach((partial) => {
-      const osc = context.createOscillator();
-      const gain = context.createGain();
-
-      osc.type = partial.type;
-      osc.frequency.setValueAtTime(frequency * partial.ratio, now);
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.linearRampToValueAtTime(partial.gain * velocity, now + 0.004);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + partial.decay);
-
-      osc.connect(gain);
-      gain.connect(out);
-      osc.start(now);
-      osc.stop(now + partial.decay + 0.05);
-      oscillators.push(osc);
+      const voice: Voice = { gain, source };
+      const list = this.voices.get(note) ?? [];
+      list.push(voice);
+      this.voices.set(note, list);
+      source.addEventListener("ended", () => {
+        const current = this.voices.get(note);
+        if (!current) return;
+        const next = current.filter((item) => item !== voice);
+        if (next.length === 0) this.voices.delete(note);
+        else this.voices.set(note, next);
+      }, { once: true });
     });
-
-    const tick = this.noiseBurst(context, 0.025);
-    const tickFilter = context.createBiquadFilter();
-    const tickGain = context.createGain();
-
-    tickFilter.type = "bandpass";
-    tickFilter.frequency.value = Math.min(9000, frequency * 4);
-    tickFilter.Q.value = 1.1;
-    tickGain.gain.setValueAtTime(0.18 * velocity, now);
-    tickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
-
-    tick.connect(tickFilter);
-    tickFilter.connect(tickGain);
-    tickGain.connect(out);
-    tick.start(now);
-    tick.stop(now + 0.06);
-
-    const voice: Voice = { gain: out, oscillators };
-    const list = this.voices.get(note) ?? [];
-    list.push(voice);
-    this.voices.set(note, list);
-
-    window.setTimeout(() => {
-      const current = this.voices.get(note);
-      if (!current) return;
-      const next = current.filter((item) => item !== voice);
-      if (next.length === 0) this.voices.delete(note);
-      else this.voices.set(note, next);
-    }, 2600);
   }
 
   damp(note: string, seconds = 0.09) {
@@ -181,11 +155,11 @@ export class PanSynth {
     if (!list) return;
 
     const now = context.currentTime;
-    list.forEach(({ gain, oscillators }) => {
+    list.forEach(({ gain, source }) => {
       gain.gain.cancelScheduledValues(now);
       gain.gain.setValueAtTime(Math.max(gain.gain.value, 0.0001), now);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + seconds);
-      oscillators.forEach((osc) => osc.stop(now + seconds + 0.03));
+      source.stop(now + seconds + 0.03);
     });
 
     this.voices.delete(note);
@@ -202,5 +176,6 @@ export class PanSynth {
     this.context = null;
     this.master = null;
     this.voices.clear();
+    this.buffers.clear();
   }
 }

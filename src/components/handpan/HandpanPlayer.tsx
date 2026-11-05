@@ -400,7 +400,7 @@ export default function HandpanPlayer() {
           Click or tap a tone field to strike it, drag across the surface to
           mute, and switch between measured layouts. Use the key shift with
           measured layouts, or choose every pitch yourself in Custom mode.
-          Sound is a synthesized preview; each handmade instrument has its own voice.
+           Sound is a recorded sample preview; each handmade instrument has its own voice.
         </p>
       </div>
 
