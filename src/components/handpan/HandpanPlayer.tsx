@@ -24,6 +24,7 @@ const CUSTOM_NOTE_OPTIONS = Array.from({ length: 5 }, (_, index) => index + 3).f
 const MAX_CUSTOM_TOP = 13;
 const MAX_CUSTOM_BOTTOM = 6;
 const CUSTOM_TOP_FIELD_ORDERS: Record<number, number[]> = {
+  11: [0, 1, 2, 4, 3, 7, 5, 6, 8, 9, 10],
   12: [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 9, 11],
   13: [0, 1, 2, 4, 5, 6, 3, 7, 8, 9, 10, 12, 11],
 };
