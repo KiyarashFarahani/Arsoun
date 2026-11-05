@@ -14,9 +14,21 @@ import {
 } from "@/lib/handpan/themes";
 
 const THEME_NAMES = Object.keys(PAN_THEMES) as PanThemeName[];
-const CUSTOM_NOTES = ["D3", "E3", "F3", "G3", "A3", "Bb3", "C4", "D4", "E4", "F4", "G4", "A4", "Bb4", "C5", "D5", "E5", "F5", "G5", "A5", "Bb5", "C6", "D6", "E6", "F6", "G6", "A6", "Bb6", "C7", "D7", "E7", "F7", "G7", "A7", "Bb7"];
+const NOTE_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
+const CUSTOM_NOTE_OPTIONS = Array.from({ length: 5 }, (_, index) => index + 3).flatMap(
+  (octave) => NOTE_NAMES.map((name) => `${name}${octave}`),
+).filter((note) => {
+  const midi = noteToMidi(note);
+  return midi !== null && midi >= (noteToMidi("D3") ?? 0) && midi <= (noteToMidi("Bb7") ?? 127);
+});
 const MAX_CUSTOM_TOP = 13;
 const MAX_CUSTOM_BOTTOM = 6;
+
+type CustomNoteSide = "top" | "bottom";
+
+function resizeNotes(notes: string[], count: number) {
+  return Array.from({ length: count }, (_, index) => notes[index] ?? "");
+}
 
 function sortByPitch(notes: string[]) {
   return [...notes].sort(
@@ -24,10 +36,108 @@ function sortByPitch(notes: string[]) {
   );
 }
 
+interface CustomNoteModalProps {
+  label: string;
+  note: string;
+  onClose: () => void;
+  onClear: () => void;
+  onSelect: (note: string) => void;
+}
+
+function CustomNoteModal({
+  label,
+  note,
+  onClose,
+  onClear,
+  onSelect,
+}: CustomNoteModalProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    closeButtonRef.current?.focus();
+  }, []);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-4 backdrop-blur-sm sm:items-center"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="custom-note-picker-title"
+    >
+      <button
+        type="button"
+        aria-label="Close note picker"
+        onClick={onClose}
+        className="absolute inset-0 cursor-default"
+      />
+
+      <div className="relative z-10 w-full max-w-lg rounded-3xl border border-white/15 bg-[#111] p-5 shadow-2xl shadow-black/60 sm:p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-[#d6a86b]">
+              Custom note sequence
+            </p>
+            <h2
+              id="custom-note-picker-title"
+              className="mt-2 font-heading text-2xl font-light text-white"
+            >
+              Choose note · {label}
+            </h2>
+            <p className="mt-2 font-body text-xs text-white/40">
+              Select a pitch for this tone field.
+            </p>
+          </div>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            onClick={onClose}
+            aria-label="Close note picker"
+            className="min-h-11 min-w-11 rounded-xl border border-white/10 text-xl text-white/45 transition hover:border-white/30 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#d6a86b]/70"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="mt-5 grid max-h-[min(55vh,26rem)] grid-cols-4 gap-2 overflow-y-auto pr-1 sm:grid-cols-6">
+          {CUSTOM_NOTE_OPTIONS.map((option) => (
+            <button
+              type="button"
+              key={option}
+              aria-pressed={note === option}
+              onClick={() => onSelect(option)}
+              className={`min-h-11 rounded-xl border px-2 font-body text-xs transition focus:outline-none focus:ring-2 focus:ring-[#d6a86b]/70 ${
+                note === option
+                  ? "border-[#d6a86b] bg-[#d6a86b] text-black"
+                  : "border-white/10 bg-black/20 text-white/65 hover:border-white/30 hover:text-white"
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={onClear}
+          className="mt-4 min-h-11 w-full rounded-xl border border-white/10 font-body text-xs text-white/45 transition hover:border-white/30 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#d6a86b]/70"
+        >
+          Clear slot
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function HandpanPlayer() {
   const [modelId, setModelId] = useState(PAN_MODELS[0].id);
   const [customTopCount, setCustomTopCount] = useState(9);
   const [customBottomCount, setCustomBottomCount] = useState(0);
+  const [customTopNotes, setCustomTopNotes] = useState(() => resizeNotes([], 9));
+  const [customBottomNotes, setCustomBottomNotes] = useState<string[]>([]);
+  const [openPicker, setOpenPicker] = useState<{
+    side: CustomNoteSide;
+    index: number;
+  } | null>(null);
   const [view, setView] = useState<"top" | "bottom">("top");
   const [surface, setSurface] = useState<"render" | "schematic">("render");
   const [theme, setTheme] = useState<PanThemeName>("ember");
@@ -42,8 +152,8 @@ export default function HandpanPlayer() {
 
   const isCustom = modelId === "custom";
   const customDefinition = useMemo(() => {
-    const top = CUSTOM_NOTES.slice(1, customTopCount);
-    const bottom = CUSTOM_NOTES.slice(customTopCount, customTopCount + customBottomCount);
+    const top = customTopNotes.slice(1, customTopCount);
+    const bottom = customBottomNotes.slice(0, customBottomCount);
     const preferred = ["c-ashakiran-17", "d-kurd-19", "fis-kurd-22", "e-amara-20", "b3-pygmy-20", "d-aegean-18", "d-kurd-13"];
     const byCount = (side: "top" | "bottom", count: number) => PAN_MODELS
       .filter((m) => (m.definition.notes?.[side]?.length ?? 0) > 0)
@@ -53,8 +163,14 @@ export default function HandpanPlayer() {
       })[0].definition;
     const topTemplate = byCount("top", top.length);
     const bottomTemplate = byCount("bottom", bottom.length) ?? topTemplate;
-    return retuneSides(topTemplate, bottomTemplate, top, bottom);
-  }, [customTopCount, customBottomCount]);
+    return retuneSides(
+      topTemplate,
+      bottomTemplate,
+      top,
+      bottom,
+      customTopNotes[0] ?? "",
+    );
+  }, [customTopCount, customBottomCount, customTopNotes, customBottomNotes]);
   const model = PAN_MODELS.find((item) => item.id === modelId) ?? PAN_MODELS[0];
   const definition = useMemo(
     () => isCustom ? customDefinition : transposeDefinition(model.definition, transpose),
@@ -77,6 +193,32 @@ export default function HandpanPlayer() {
   const originalDing = model.definition.notes?.ding;
   const shiftedDing = definition.notes?.ding;
   const shiftLabel = `${transpose > 0 ? "+" : ""}${transpose}`;
+  const topSequence = isCustom
+    ? customTopNotes
+    : [definition.notes?.ding, ...(definition.notes?.top ?? [])].filter(
+        (note): note is string => Boolean(note),
+      );
+  const bottomSequence = isCustom
+    ? customBottomNotes
+    : definition.notes?.bottom ?? [];
+  const displayDescription = isCustom
+    ? "Build a custom layout by assigning a pitch to each tone field."
+    : model.description;
+  const displayScale = isCustom ? "Manual selection" : model.scale;
+  const customAssignedCount = [...customTopNotes, ...customBottomNotes].filter(Boolean).length;
+  const customSlotCount = customTopCount + customBottomCount;
+  const customTopComplete =
+    customTopNotes.length === customTopCount && customTopNotes.every(Boolean);
+  const pickerNotes =
+    openPicker?.side === "top" ? customTopNotes : customBottomNotes;
+  const pickerNote = openPicker ? pickerNotes[openPicker.index] ?? "" : "";
+  const pickerLabel = openPicker
+    ? openPicker.side === "top"
+      ? openPicker.index === 0
+        ? "DING"
+        : `TOP ${String(openPicker.index).padStart(2, "0")}`
+      : `UNDERSIDE ${String(openPicker.index + 1).padStart(2, "0")}`
+    : "";
 
   const getSynth = useCallback(() => {
     if (!synthRef.current) synthRef.current = new PanSynth();
@@ -100,6 +242,7 @@ export default function HandpanPlayer() {
     clearTimers();
     synthRef.current?.dampAll();
     setActiveNote(null);
+    setOpenPicker(null);
     if (!hasBottom) setView("top");
   }, [modelId, hasBottom, clearTimers]);
 
@@ -108,6 +251,23 @@ export default function HandpanPlayer() {
     synthRef.current?.dampAll();
     setActiveNote(null);
   }, [transpose, clearTimers]);
+
+  useEffect(() => {
+    if (!openPicker) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpenPicker(null);
+    };
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [openPicker]);
 
   const handleNote = (note: string) => {
     setActiveNote(note);
@@ -118,14 +278,59 @@ export default function HandpanPlayer() {
     if (sound) getSynth().damp(note);
   };
 
+  const updateCustomNote = (
+    side: CustomNoteSide,
+    index: number,
+    note: string,
+  ) => {
+    if (side === "top") {
+      setCustomTopNotes((current) => {
+        const next = resizeNotes(current, customTopCount);
+        next[index] = note;
+        return next;
+      });
+    } else {
+      setCustomBottomNotes((current) => {
+        const next = resizeNotes(current, customBottomCount);
+        next[index] = note;
+        return next;
+      });
+    }
+    setOpenPicker(null);
+  };
+
+  const clearCustomNote = (side: CustomNoteSide, index: number) => {
+    updateCustomNote(side, index, "");
+  };
+
+  const setTopSlotCount = (count: number) => {
+    setCustomTopCount(count);
+    setCustomTopNotes((current) => resizeNotes(current, count));
+    setOpenPicker(null);
+  };
+
+  const setBottomSlotCount = (count: number) => {
+    setCustomBottomCount(count);
+    setCustomBottomNotes((current) => resizeNotes(current, count));
+    setOpenPicker(null);
+  };
+
+  const clearCustomLayout = () => {
+    setCustomTopNotes(resizeNotes([], customTopCount));
+    setCustomBottomNotes(resizeNotes([], customBottomCount));
+    setOpenPicker(null);
+  };
+
   const playScale = () => {
     clearTimers();
     synthRef.current?.dampAll();
 
     const ding = definition.notes?.ding;
-    const top = sortByPitch(definition.notes?.top ?? []).filter(
-      (note) => note !== ding,
-    );
+    const top = isCustom
+      ? customTopNotes.slice(1).filter(Boolean)
+      : sortByPitch(definition.notes?.top ?? []).filter(
+          (note) => note !== ding,
+        );
     const sequence = ding ? [ding, ...top] : top;
 
     if (sound && sequence[0]) {
@@ -165,8 +370,9 @@ export default function HandpanPlayer() {
         </h1>
         <p className="mt-4 font-body text-sm leading-relaxed text-white/55">
           Click or tap a tone field to strike it, drag across the surface to
-          mute, and switch between measured layouts. Use the key shift to play
-          any layout in any key. Sound is a synthesized preview; each handmade instrument has its own voice.
+          mute, and switch between measured layouts. Use the key shift with
+          measured layouts, or choose every pitch yourself in Custom mode.
+          Sound is a synthesized preview; each handmade instrument has its own voice.
         </p>
       </div>
 
@@ -190,7 +396,7 @@ export default function HandpanPlayer() {
             <span>
               {view === "top" ? "Top view" : "Bottom view"} ·{" "}
               {definition.fields.length} fields
-              {transpose !== 0 ? ` · ${shiftLabel} st` : ""}
+              {!isCustom && transpose !== 0 ? ` · ${shiftLabel} st` : ""}
             </span>
             <span className="flex items-center gap-2">
               <span
@@ -212,6 +418,8 @@ export default function HandpanPlayer() {
             <label className="mt-4 block font-body text-xs text-white/45">
               Model
               <select
+                id="handpan-model"
+                name="handpan-model"
                 value={modelId}
                 onChange={(event) => setModelId(event.target.value)}
                 className="mt-2 w-full rounded-xl border border-white/10 bg-[#111] px-3 py-2.5 font-body text-sm text-white outline-none transition focus:border-[#d6a86b]/60"
@@ -224,15 +432,69 @@ export default function HandpanPlayer() {
               </select>
             </label>
 
-            {isCustom ? (
-              <div className="mt-4 space-y-4">
-                 <div><span className="font-body text-xs text-white/45">Top notes (including ding)</span><div className="mt-2 flex flex-wrap gap-2">{Array.from({ length: MAX_CUSTOM_TOP - 8 }, (_, i) => i + 9).map((count) => <button type="button" key={count} aria-pressed={customTopCount === count} onClick={() => setCustomTopCount(count)} className={`rounded-full border px-3 py-2 text-xs ${customTopCount === count ? "border-[#d6a86b] bg-[#d6a86b] text-black" : "border-white/15 text-white/65"}`}>{count}</button>)}</div></div>
-                 <div><span className="font-body text-xs text-white/45">Bottom notes</span><div className="mt-2 flex flex-wrap gap-2">{Array.from({ length: MAX_CUSTOM_BOTTOM + 1 }, (_, count) => <button type="button" key={count} aria-pressed={customBottomCount === count} onClick={() => setCustomBottomCount(count)} className={`rounded-full border px-3 py-2 text-xs ${customBottomCount === count ? "border-[#d6a86b] bg-[#d6a86b] text-black" : "border-white/15 text-white/65"}`}>{count}</button>)}</div></div>
-              </div>
-            ) : null}
+             {isCustom ? (
+               <div className="mt-4 space-y-4">
+                 <div>
+                   <div className="flex items-center justify-between gap-3">
+                     <span className="font-body text-xs text-white/45">
+                       Top slots, including ding
+                     </span>
+                     <button
+                       type="button"
+                       onClick={clearCustomLayout}
+                       className="font-body text-[11px] text-white/40 underline-offset-2 transition hover:text-white/80 hover:underline"
+                     >
+                       Clear all
+                     </button>
+                   </div>
+                   <div className="mt-2 flex flex-wrap gap-2">
+                     {Array.from({ length: MAX_CUSTOM_TOP - 8 }, (_, i) => i + 9).map(
+                       (count) => (
+                         <button
+                           type="button"
+                           key={count}
+                           aria-pressed={customTopCount === count}
+                           onClick={() => setTopSlotCount(count)}
+                           className={`min-h-11 min-w-11 rounded-full border px-3 py-2 font-body text-xs transition ${
+                             customTopCount === count
+                               ? "border-[#d6a86b] bg-[#d6a86b] text-black"
+                               : "border-white/15 text-white/65 hover:border-white/35 hover:text-white"
+                           }`}
+                         >
+                           {count}
+                         </button>
+                       ),
+                     )}
+                   </div>
+                 </div>
+
+                 <div>
+                   <span className="font-body text-xs text-white/45">
+                     Underside slots
+                   </span>
+                   <div className="mt-2 flex flex-wrap gap-2">
+                     {Array.from({ length: MAX_CUSTOM_BOTTOM + 1 }, (_, count) => (
+                       <button
+                         type="button"
+                         key={count}
+                         aria-pressed={customBottomCount === count}
+                         onClick={() => setBottomSlotCount(count)}
+                         className={`min-h-11 min-w-11 rounded-full border px-3 py-2 font-body text-xs transition ${
+                           customBottomCount === count
+                             ? "border-[#d6a86b] bg-[#d6a86b] text-black"
+                             : "border-white/15 text-white/65 hover:border-white/35 hover:text-white"
+                         }`}
+                       >
+                         {count}
+                       </button>
+                     ))}
+                   </div>
+                 </div>
+               </div>
+             ) : null}
 
             <p className="mt-3 font-body text-sm leading-relaxed text-white/55">
-              {model.description}
+               {displayDescription}
             </p>
 
             <div className="mt-5 grid grid-cols-2 gap-3">
@@ -241,7 +503,7 @@ export default function HandpanPlayer() {
                   Scale
                 </span>
                 <span className="mt-1 block font-body text-sm text-white/80">
-                  {model.scale}
+                   {displayScale}
                 </span>
               </div>
               <div className="rounded-xl border border-white/10 bg-black/20 p-3">
@@ -254,7 +516,8 @@ export default function HandpanPlayer() {
               </div>
             </div>
 
-            <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-3">
+             {!isCustom ? (
+               <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-3">
               <div className="flex items-center justify-between gap-2">
                 <span className="font-body text-[10px] uppercase tracking-[0.2em] text-white/35">
                   Key shift
@@ -317,10 +580,146 @@ export default function HandpanPlayer() {
                   </button>
                 ) : null}
               </div>
-            </div>
-          </section>
+               </div>
+             ) : null}
+           </section>
 
-          <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+           <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+             <div className="flex items-start justify-between gap-4">
+               <div>
+                 <h2 className="font-body text-[11px] uppercase tracking-[0.25em] text-white/40">
+                   {isCustom ? "Custom note sequence" : "Current notes"}
+                 </h2>
+                 <p className="mt-2 font-body text-xs leading-relaxed text-white/35">
+                   {isCustom
+                     ? "Choose a pitch for each tone field. Slots stay in physical order."
+                     : "Notes shown in the instrument’s playing order."}
+                 </p>
+               </div>
+               {isCustom ? (
+                 <span className="shrink-0 font-body text-[11px] tabular-nums text-[#e3bb86]">
+                   {customAssignedCount}/{customSlotCount} assigned
+                 </span>
+               ) : null}
+             </div>
+
+             <div className="mt-5">
+               <span className="font-body text-[10px] uppercase tracking-[0.2em] text-white/30">
+                 Top · playing order
+               </span>
+               <div className="mt-2 flex flex-wrap gap-2">
+                 {topSequence.map((note, index) => {
+                   const isPickerOpen =
+                     isCustom &&
+                     openPicker?.side === "top" &&
+                     openPicker.index === index;
+                   const label = index === 0 ? "DING" : String(index).padStart(2, "0");
+
+                   return (
+                     <div key={`top-${index}`} className="relative">
+                       <button
+                         type="button"
+                         aria-label={
+                           isCustom
+                             ? `Choose note for ${index === 0 ? "ding" : `top slot ${index}`}`
+                             : `Play ${note}`
+                         }
+                         aria-expanded={isCustom ? isPickerOpen : undefined}
+                         onClick={() => {
+                           if (isCustom) {
+                             setOpenPicker(
+                               isPickerOpen ? null : { side: "top", index },
+                             );
+                           } else if (note) {
+                             panRef.current?.strike(note);
+                             handleNote(note);
+                           }
+                         }}
+                         className={`min-h-12 rounded-xl border px-3 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-[#d6a86b]/70 ${
+                           index === 0
+                             ? "border-[#d6a86b]/60 bg-[#d6a86b]/10"
+                             : note
+                               ? "border-white/10 bg-black/20 hover:border-white/30"
+                               : "border-dashed border-white/20 bg-black/10 hover:border-[#d6a86b]/60"
+                         }`}
+                       >
+                         <span className="block font-body text-[9px] uppercase tracking-[0.16em] text-white/35">
+                           {label}
+                         </span>
+                         <span
+                           className={`mt-0.5 block min-w-7 font-body text-xs ${
+                             note ? "text-white/80" : "text-white/30"
+                           }`}
+                         >
+                           {note || "—"}
+                         </span>
+                       </button>
+
+                      </div>
+                   );
+                 })}
+               </div>
+             </div>
+
+             {bottomSequence.length > 0 ? (
+               <div className="mt-5">
+                 <span className="font-body text-[10px] uppercase tracking-[0.2em] text-white/30">
+                   Underside · playing order
+                 </span>
+                 <div className="mt-2 flex flex-wrap gap-2">
+                   {bottomSequence.map((note, index) => {
+                     const isPickerOpen =
+                       isCustom &&
+                       openPicker?.side === "bottom" &&
+                       openPicker.index === index;
+
+                     return (
+                       <div key={`bottom-${index}`} className="relative">
+                         <button
+                           type="button"
+                           aria-label={
+                             isCustom
+                               ? `Choose note for underside slot ${index + 1}`
+                               : `Play ${note}`
+                           }
+                           aria-expanded={isCustom ? isPickerOpen : undefined}
+                           onClick={() => {
+                             if (isCustom) {
+                               setOpenPicker(
+                                 isPickerOpen ? null : { side: "bottom", index },
+                               );
+                             } else if (note) {
+                               panRef.current?.strike(note);
+                               handleNote(note);
+                             }
+                           }}
+                           className={`min-h-12 rounded-xl border px-3 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-[#d6a86b]/70 ${
+                             note
+                               ? "border-[#d6a86b]/25 bg-[#d6a86b]/10"
+                               : "border-dashed border-white/20 bg-black/10 hover:border-[#d6a86b]/60"
+                           }`}
+                         >
+                           <span className="block font-body text-[9px] uppercase tracking-[0.16em] text-white/35">
+                             {String(index + 1).padStart(2, "0")}
+                           </span>
+                           <span
+                             className={`mt-0.5 block min-w-7 font-body text-xs ${
+                               note ? "text-[#e3bb86]" : "text-white/30"
+                             }`}
+                           >
+                             {note || "—"}
+                           </span>
+                         </button>
+
+                        </div>
+                     );
+                   })}
+                 </div>
+               </div>
+             ) : null}
+           </section>
+
+           <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
             <h2 className="font-body text-[11px] uppercase tracking-[0.25em] text-white/40">
               Display
             </h2>
@@ -360,9 +759,11 @@ export default function HandpanPlayer() {
               </div>
 
               <label className="block font-body text-xs text-white/45">
-                Style
-                <select
-                  value={theme}
+                 Style
+                 <select
+                   id="handpan-style"
+                   name="handpan-style"
+                   value={theme}
                   onChange={(event) =>
                     setTheme(event.target.value as PanThemeName)
                   }
@@ -440,54 +841,29 @@ export default function HandpanPlayer() {
               </label>
             </div>
 
-            <button
-              type="button"
-              onClick={playScale}
-              className="mt-5 w-full rounded-xl bg-[#d6a86b] px-4 py-3 font-body text-xs font-medium uppercase tracking-[0.2em] text-black transition hover:bg-[#e3bb86]"
-            >
-              Play the scale
-            </button>
-          </section>
-
-          <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-            <h2 className="font-body text-[11px] uppercase tracking-[0.25em] text-white/40">
-              Notes
-            </h2>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {[definition.notes?.ding, ...(definition.notes?.top ?? [])]
-                .filter(Boolean)
-                .map((note) => (
-                  <button
-                    type="button"
-                    onClick={() => { panRef.current?.strike(note!); handleNote(note!); }}
-                    key={note}
-                    className="rounded-lg border border-white/10 bg-black/20 px-2.5 py-1 font-body text-xs text-white/65"
-                  >
-                    {note}
-                  </button>
-                ))}
-            </div>
-
-            {hasBottom ? (
-              <>
-                <h3 className="mt-5 font-body text-[10px] uppercase tracking-[0.2em] text-white/30">
-                  Underside
-                </h3>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {bottomNotes.map((note) => (
-                    <span
-                      key={note}
-                      className="rounded-lg border border-[#d6a86b]/25 bg-[#d6a86b]/10 px-2.5 py-1 font-body text-xs text-[#e3bb86]"
-                    >
-                      {note}
-                    </span>
-                  ))}
-                </div>
-              </>
-            ) : null}
-          </section>
+             <button
+               type="button"
+               onClick={playScale}
+               disabled={isCustom && !customTopComplete}
+               className="mt-5 w-full rounded-xl bg-[#d6a86b] px-4 py-3 font-body text-xs font-medium uppercase tracking-[0.2em] text-black transition hover:bg-[#e3bb86] disabled:cursor-not-allowed disabled:opacity-35"
+             >
+               Play the scale
+             </button>
+           </section>
         </div>
       </div>
+
+      {openPicker && isCustom ? (
+        <CustomNoteModal
+          label={pickerLabel}
+          note={pickerNote}
+          onClose={() => setOpenPicker(null)}
+          onClear={() => clearCustomNote(openPicker.side, openPicker.index)}
+          onSelect={(note) =>
+            updateCustomNote(openPicker.side, openPicker.index, note)
+          }
+        />
+      ) : null}
     </div>
   );
 }
