@@ -178,6 +178,7 @@ export default function HandpanPlayer() {
   const [sound, setSound] = useState(true);
   const [transpose, setTranspose] = useState(0);
   const [activeNote, setActiveNote] = useState<string | null>(null);
+  const [isAudioLoading, setIsAudioLoading] = useState(true);
 
   const panRef = useRef<Handpan2DHandle>(null);
   const synthRef = useRef<PanSynth | null>(null);
@@ -240,6 +241,12 @@ export default function HandpanPlayer() {
       (note): note is string => Boolean(note),
     );
   }, [definition]);
+  const audioNotes = useMemo(
+    () => Array.from(
+      new Set(definition.fields.map((field) => field.note).filter(Boolean)),
+    ),
+    [definition],
+  );
   const displayDescription = isCustom
     ? "Build a custom layout by assigning a pitch to each tone field."
     : model.description;
@@ -263,6 +270,19 @@ export default function HandpanPlayer() {
     if (!synthRef.current) synthRef.current = new PanSynth();
     return synthRef.current;
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setIsAudioLoading(true);
+
+    void getSynth().preload(audioNotes).finally(() => {
+      if (!cancelled) setIsAudioLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [audioNotes, getSynth]);
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach((id) => window.clearTimeout(id));
@@ -483,8 +503,19 @@ export default function HandpanPlayer() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
-        <div className="relative self-start lg:sticky lg:top-28 overflow-hidden rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_50%_35%,rgba(214,168,107,0.12),rgba(255,255,255,0.02)_45%,rgba(255,255,255,0)_75%)] p-4 sm:p-8">
-          <Handpan2D
+         <div
+           className="relative self-start overflow-hidden rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_50%_35%,rgba(214,168,107,0.12),rgba(255,255,255,0.02)_45%,rgba(255,255,255,0)_75%)] p-4 sm:p-8 lg:sticky lg:top-28"
+           aria-busy={isAudioLoading}
+         >
+           {isAudioLoading ? (
+             <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#0a0a0a]/75 backdrop-blur-sm">
+               <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/40 px-4 py-2.5 font-body text-xs text-white/70 shadow-xl">
+                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#d6a86b]/30 border-t-[#d6a86b]" />
+                 <span role="status" aria-live="polite">Loading sounds…</span>
+               </div>
+             </div>
+           ) : null}
+           <Handpan2D
             ref={panRef}
              definition={definition}
              view={view}

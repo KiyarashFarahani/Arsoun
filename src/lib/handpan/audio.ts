@@ -54,6 +54,36 @@ function noteSampleUrl(note: string) {
   return `/audio/handpan/${AUDIO_NOTE_NAMES[midi % 12]}${octave}.mp3`;
 }
 
+const sampleDataPromises = new Map<string, Promise<ArrayBuffer | null>>();
+
+function loadSampleData(url: string) {
+  const cached = sampleDataPromises.get(url);
+  if (cached) return cached;
+
+  const promise = (async () => {
+    try {
+      const cache = typeof caches === "undefined"
+        ? null
+        : await caches.open("arsoun-handpan-samples-v1");
+      const cachedResponse = await cache?.match(url);
+      if (cachedResponse) return cachedResponse.arrayBuffer();
+
+      const response = await fetch(url, { cache: "force-cache" });
+      if (!response.ok) return null;
+
+      if (cache) {
+        await cache.put(url, response.clone());
+      }
+      return response.arrayBuffer();
+    } catch {
+      return null;
+    }
+  })();
+
+  sampleDataPromises.set(url, promise);
+  return promise;
+}
+
 export class PanSynth {
   private context: AudioContext | null = null;
   private master: GainNode | null = null;
@@ -106,12 +136,22 @@ export class PanSynth {
     const cached = this.buffers.get(note);
     if (cached) return cached;
 
-    const buffer = fetch(url)
-      .then((response) => (response.ok ? response.arrayBuffer() : null))
-      .then((data) => (data ? context.decodeAudioData(data) : null))
+    const buffer = loadSampleData(url)
+      .then((data) => (data ? context.decodeAudioData(data.slice(0)) : null))
       .catch(() => null);
     this.buffers.set(note, buffer);
     return buffer;
+  }
+
+  async preload(notes: string[]) {
+    const context = this.ensureContext();
+    if (!context) return;
+
+    await Promise.all(
+      Array.from(new Set(notes.filter(Boolean))).map((note) =>
+        this.loadBuffer(note, context),
+      ),
+    );
   }
 
   strike(note: string, velocity = 1) {
