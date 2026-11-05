@@ -139,7 +139,6 @@ export default function HandpanPlayer() {
     index: number;
   } | null>(null);
   const [view, setView] = useState<"top" | "bottom">("top");
-  const [surface, setSurface] = useState<"render" | "schematic">("render");
   const [theme, setTheme] = useState<PanThemeName>("ember");
   const [showLabels, setShowLabels] = useState(true);
   const [sound, setSound] = useState(true);
@@ -178,18 +177,6 @@ export default function HandpanPlayer() {
   );
   const bottomNotes = definition.notes?.bottom ?? [];
   const hasBottom = bottomNotes.length > 0;
-  const render =
-    view === "bottom"
-      ? {
-          src: model.render.bottom,
-          radius: model.render.bottomRadius ?? model.render.radius,
-          spin: model.render.bottomSpin ?? model.render.spin,
-        }
-      : {
-          src: model.render.top,
-          radius: model.render.radius,
-          spin: model.render.spin,
-        };
   const originalDing = model.definition.notes?.ding;
   const shiftedDing = definition.notes?.ding;
   const shiftLabel = `${transpose > 0 ? "+" : ""}${transpose}`;
@@ -380,13 +367,10 @@ export default function HandpanPlayer() {
         <div className="relative self-start lg:sticky lg:top-28 overflow-hidden rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_50%_35%,rgba(214,168,107,0.12),rgba(255,255,255,0.02)_45%,rgba(255,255,255,0)_75%)] p-4 sm:p-8">
           <Handpan2D
             ref={panRef}
-            definition={definition}
-            view={view}
-            rotate={90}
-            renderSrc={surface === "render" ? render.src : null}
-            renderRadius={render.radius}
-            renderSpin={render.spin}
-            theme={theme}
+             definition={definition}
+             view={view}
+             rotate={90}
+             theme={theme}
             showLabels={showLabels}
             onNote={handleNote}
             onDamp={handleDamp}
@@ -719,10 +703,15 @@ export default function HandpanPlayer() {
              ) : null}
            </section>
 
-           <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-            <h2 className="font-body text-[11px] uppercase tracking-[0.25em] text-white/40">
-              Display
-            </h2>
+            <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+             <div className="flex items-center justify-between gap-3">
+               <h2 className="font-body text-[11px] uppercase tracking-[0.25em] text-white/40">
+                 Display
+               </h2>
+               <span className="font-body text-[10px] uppercase tracking-[0.2em] text-[#d6a86b]/70">
+                 Schematic mode
+               </span>
+             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-3">
               <div>
@@ -778,48 +767,7 @@ export default function HandpanPlayer() {
               </label>
             </div>
 
-            <div className="mt-5">
-              <span className="mb-2 block font-body text-xs text-white/45">
-                Surface
-              </span>
-              <div className="flex rounded-xl border border-white/10 bg-black/20 p-1">
-                <button
-                  type="button"
-                  aria-pressed={surface === "render"}
-                  onClick={() => setSurface("render")}
-                  className={`flex-1 rounded-lg px-2 py-1.5 font-body text-xs transition ${
-                    surface === "render"
-                      ? "bg-[#d6a86b] text-black"
-                      : "text-white/55 hover:text-white"
-                  }`}
-                >
-                  Photo render
-                </button>
-                <button
-                  type="button"
-                  aria-pressed={surface === "schematic"}
-                  onClick={() => {
-                    setSurface("schematic");
-                    setTheme((current) =>
-                      current === "ember" ? "blueprint" : current,
-                    );
-                  }}
-                  className={`flex-1 rounded-lg px-2 py-1.5 font-body text-xs transition ${
-                    surface === "schematic"
-                      ? "bg-[#d6a86b] text-black"
-                      : "text-white/55 hover:text-white"
-                  }`}
-                >
-                  Schematic
-                </button>
-              </div>
-              <p className="mt-2 font-body text-[11px] leading-relaxed text-white/30">
-                Schematic draws the shell and tone-field geometry; the Style
-                select changes its look.
-              </p>
-            </div>
-
-            <div className="mt-5 flex flex-col gap-3">
+             <div className="mt-5 flex flex-col gap-3">
               <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/10 bg-black/20 px-4 py-3 font-body text-sm text-white/70">
                 Show note names
                 <input
