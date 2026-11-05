@@ -14,6 +14,27 @@ import {
 } from "@/lib/handpan/themes";
 
 const THEME_NAMES = Object.keys(PAN_THEMES) as PanThemeName[];
+const KEYBOARD_KEYS = [
+  "0",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "q",
+  "w",
+  "e",
+  "r",
+  "t",
+  "y",
+  "u",
+  "i",
+  "o",
+];
 const NOTE_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
 const CUSTOM_NOTE_OPTIONS = Array.from({ length: 5 }, (_, index) => index + 2).flatMap(
   (octave) => NOTE_NAMES.map((name) => `${name}${octave}`),
@@ -161,6 +182,7 @@ export default function HandpanPlayer() {
   const panRef = useRef<Handpan2DHandle>(null);
   const synthRef = useRef<PanSynth | null>(null);
   const timersRef = useRef<number[]>([]);
+  const pressedKeyboardNotesRef = useRef(new Map<string, string>());
 
   const isCustom = modelId === "custom";
   const customDefinition = useMemo(() => {
@@ -209,6 +231,15 @@ export default function HandpanPlayer() {
   const bottomSequence = isCustom
     ? customBottomNotes
     : definition.notes?.bottom ?? [];
+  const keyboardNotes = useMemo(() => {
+    const ding = definition.notes?.ding;
+    const notes = Array.from(
+      new Set(definition.fields.map((field) => field.note).filter(Boolean)),
+    ).filter((note) => note !== ding);
+    return [ding, ...sortByPitch(notes)].filter(
+      (note): note is string => Boolean(note),
+    );
+  }, [definition]);
   const displayDescription = isCustom
     ? "Build a custom layout by assigning a pitch to each tone field."
     : model.description;
@@ -277,14 +308,61 @@ export default function HandpanPlayer() {
     };
   }, [openPicker]);
 
-  const handleNote = (note: string) => {
+  const handleNote = useCallback((note: string) => {
     setActiveNote(note);
     if (sound) getSynth().strike(note);
-  };
+  }, [getSynth, sound]);
 
-  const handleDamp = (note: string) => {
+  const handleDamp = useCallback((note: string) => {
     if (sound) getSynth().damp(note);
-  };
+  }, [getSynth, sound]);
+
+  useEffect(() => {
+    const releasePressedNotes = () => {
+      pressedKeyboardNotesRef.current.clear();
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        (["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName) ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+
+      const key = event.key.toLowerCase();
+      const noteIndex = KEYBOARD_KEYS.indexOf(key);
+      const note = keyboardNotes[noteIndex];
+      if (noteIndex < 0 || !note || pressedKeyboardNotesRef.current.has(key)) {
+        return;
+      }
+
+      event.preventDefault();
+      pressedKeyboardNotesRef.current.set(key, note);
+      panRef.current?.strike(note);
+      handleNote(note);
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      const note = pressedKeyboardNotesRef.current.get(key);
+      if (!note) return;
+      pressedKeyboardNotesRef.current.delete(key);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("blur", releasePressedNotes);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("blur", releasePressedNotes);
+      releasePressedNotes();
+    };
+  }, [handleNote, keyboardNotes]);
 
   const updateCustomNote = (
     side: CustomNoteSide,
@@ -555,11 +633,14 @@ export default function HandpanPlayer() {
                   <h2 className="font-body text-[11px] uppercase tracking-[0.25em] text-white/40">
                     {isCustom ? "Custom note sequence" : "Current notes"}
                   </h2>
-                 <p className="mt-2 font-body text-xs leading-relaxed text-white/35">
+                  <p className="mt-2 font-body text-xs leading-relaxed text-white/35">
                     {isCustom
                       ? "Tap a tone field or choose a slot below, then assign its pitch."
                      : "Notes shown in the instrument’s playing order."}
-                 </p>
+                  </p>
+                  <p className="mt-2 font-body text-[11px] text-[#e3bb86]/70">
+                    Keyboard: 0 ding · 1–9 low to high · Q–O continuing upward
+                  </p>
                 </div>
                 {isCustom ? (
                   <div className="flex shrink-0 items-center gap-3">
