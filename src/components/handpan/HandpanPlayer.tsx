@@ -23,11 +23,21 @@ const CUSTOM_NOTE_OPTIONS = Array.from({ length: 5 }, (_, index) => index + 3).f
 });
 const MAX_CUSTOM_TOP = 13;
 const MAX_CUSTOM_BOTTOM = 6;
+const CUSTOM_TOP_FIELD_ORDERS: Record<number, number[]> = {
+  13: [0, 1, 2, 4, 5, 6, 3, 7, 8, 9, 10, 12, 11],
+};
 
 type CustomNoteSide = "top" | "bottom";
 
 function resizeNotes(notes: string[], count: number) {
   return Array.from({ length: count }, (_, index) => notes[index] ?? "");
+}
+
+function customTopSlotOrder(count: number) {
+  return (
+    CUSTOM_TOP_FIELD_ORDERS[count] ??
+    Array.from({ length: count }, (_, index) => index)
+  );
 }
 
 function sortByPitch(notes: string[]) {
@@ -151,7 +161,9 @@ export default function HandpanPlayer() {
 
   const isCustom = modelId === "custom";
   const customDefinition = useMemo(() => {
-    const top = customTopNotes.slice(1, customTopCount);
+    const top = customTopSlotOrder(customTopCount)
+      .slice(1)
+      .map((slotIndex) => customTopNotes[slotIndex] ?? "");
     const bottom = customBottomNotes.slice(0, customBottomCount);
     const preferred = ["c-ashakiran-17", "d-kurd-19", "fis-kurd-22", "e-amara-20", "b3-pygmy-20", "d-aegean-18", "d-kurd-13"];
     const byCount = (side: "top" | "bottom", count: number) => PAN_MODELS
@@ -181,10 +193,13 @@ export default function HandpanPlayer() {
   const shiftedDing = definition.notes?.ding;
   const shiftLabel = `${transpose > 0 ? "+" : ""}${transpose}`;
   const topSequence = isCustom
-    ? customTopNotes
-    : [definition.notes?.ding, ...(definition.notes?.top ?? [])].filter(
-        (note): note is string => Boolean(note),
-      );
+    ? customTopNotes.map((note, slotIndex) => ({
+        note,
+        slotIndex,
+      }))
+    : [definition.notes?.ding, ...(definition.notes?.top ?? [])]
+        .filter((note): note is string => Boolean(note))
+        .map((note, slotIndex) => ({ note, slotIndex }));
   const bottomSequence = isCustom
     ? customBottomNotes
     : definition.notes?.bottom ?? [];
@@ -592,35 +607,40 @@ export default function HandpanPlayer() {
                  Top · playing order
                </span>
                <div className="mt-2 flex flex-wrap gap-2">
-                 {topSequence.map((note, index) => {
-                   const isPickerOpen =
-                     isCustom &&
-                     openPicker?.side === "top" &&
-                     openPicker.index === index;
-                   const label = index === 0 ? "DING" : String(index).padStart(2, "0");
+                  {topSequence.map(({ note, slotIndex }) => {
+                    const isPickerOpen =
+                      isCustom &&
+                      openPicker?.side === "top" &&
+                      openPicker.index === slotIndex;
+                    const label =
+                      slotIndex === 0
+                        ? "DING"
+                        : String(slotIndex).padStart(2, "0");
 
-                   return (
-                     <div key={`top-${index}`} className="relative">
-                       <button
-                         type="button"
-                         aria-label={
-                           isCustom
-                             ? `Choose note for ${index === 0 ? "ding" : `top slot ${index}`}`
-                             : `Play ${note}`
-                         }
-                         aria-expanded={isCustom ? isPickerOpen : undefined}
-                         onClick={() => {
-                           if (isCustom) {
-                             setOpenPicker(
-                               isPickerOpen ? null : { side: "top", index },
-                             );
-                           } else if (note) {
-                             panRef.current?.strike(note);
-                             handleNote(note);
-                           }
-                         }}
-                         className={`min-h-12 rounded-xl border px-3 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-[#d6a86b]/70 ${
-                           index === 0
+                    return (
+                      <div key={`top-${slotIndex}`} className="relative">
+                        <button
+                          type="button"
+                          aria-label={
+                            isCustom
+                              ? `Choose note for ${slotIndex === 0 ? "ding" : `top slot ${slotIndex}`}`
+                              : `Play ${note}`
+                          }
+                          aria-expanded={isCustom ? isPickerOpen : undefined}
+                          onClick={() => {
+                            if (isCustom) {
+                              setOpenPicker(
+                                isPickerOpen
+                                  ? null
+                                  : { side: "top", index: slotIndex },
+                              );
+                            } else if (note) {
+                              panRef.current?.strike(note);
+                              handleNote(note);
+                            }
+                          }}
+                          className={`min-h-12 rounded-xl border px-3 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-[#d6a86b]/70 ${
+                            slotIndex === 0
                              ? "border-[#d6a86b]/60 bg-[#d6a86b]/10"
                              : note
                                ? "border-white/10 bg-black/20 hover:border-white/30"
