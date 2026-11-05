@@ -206,6 +206,36 @@ function resizeCustomFields(fields: PanField[]): PanField[] {
   });
 }
 
+function symmetrizeTopPair(fields: PanField[], leftIndex: number, rightIndex: number) {
+  const left = fields[leftIndex];
+  const right = fields[rightIndex];
+  if (!left || !right) return;
+
+  const radius =
+    (Math.abs(left.centre[1]) + Math.abs(right.centre[1])) / 2;
+  const x = (left.centre[0] + right.centre[0]) / 2;
+  const leftIsScreenLeft = left.centre[1] < right.centre[1];
+  const leftY = leftIsScreenLeft ? -radius : radius;
+  const rightY = leftIsScreenLeft ? radius : -radius;
+  left.centre = [x, leftY];
+  right.centre = [x, rightY];
+}
+
+function tidyTwelveTopFields(fields: PanField[]) {
+  // The measured 12-note source is close to symmetric, but its mirrored
+  // pairs land a few millimetres apart. Keep the measured layout and average
+  // only those small left/right differences.
+  [
+    [2, 3],
+    [4, 5],
+    [6, 7],
+    [8, 10],
+    [9, 11],
+  ].forEach(([leftIndex, rightIndex]) => {
+    symmetrizeTopPair(fields, leftIndex, rightIndex);
+  });
+}
+
 /** Project a y-up coordinate into SVG space, matching the root transform. */
 export function projectPoint(
   x: number,
@@ -292,6 +322,10 @@ export function retuneSides(topTemplate: PanDefinition, bottomTemplate: PanDefin
   }
   let ti = 0; topFields.forEach(f => { f.note = f.note === topTemplate.notes?.ding ? ding : (topNotes[ti++] ?? f.note); });
   let bi = 0; bottomFields.forEach(f => { f.note = bottomNotes[bi++] ?? f.note; });
+  if (topNotes.length + 1 === 10 && topFields[0]) {
+    topFields[0].centre = [0, 0];
+  }
+  if (topNotes.length + 1 === 12) tidyTwelveTopFields(topFields);
   const fields = resizeCustomFields([...topFields, ...bottomFields]);
   return { ...topTemplate, meta: { ...topTemplate.meta, id: `custom-${topNotes.length + 1}-${bottomNotes.length}`, model: `Custom ${topNotes.length + 1}/${bottomNotes.length}` }, fields, notes: { ding, top: topFields.filter(f => f.note !== ding).map(f => f.note), bottom: bottomFields.map(f => f.note) } };
 }
