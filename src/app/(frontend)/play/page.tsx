@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function HandpanPage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0a] px-5 pb-24 pt-32 sm:px-8 lg:px-12">
+    <main className="min-h-screen bg-[#0a0a0a] px-2 pb-24 pt-32 sm:px-8 lg:px-12">
       <HandpanPlayer />
     </main>
   );

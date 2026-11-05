@@ -172,10 +172,7 @@ export default function HandpanPlayer() {
     side: CustomNoteSide;
     index: number;
   } | null>(null);
-  const [view, setView] = useState<"top" | "bottom">("top");
   const [theme, setTheme] = useState<PanThemeName>("ember");
-  const [showLabels, setShowLabels] = useState(true);
-  const [sound, setSound] = useState(true);
   const [transpose, setTranspose] = useState(0);
   const [activeNote, setActiveNote] = useState<string | null>(null);
   const [isAudioLoading, setIsAudioLoading] = useState(true);
@@ -216,11 +213,19 @@ export default function HandpanPlayer() {
     () => isCustom ? customDefinition : transposeDefinition(model.definition, transpose),
     [model, transpose, isCustom, customDefinition],
   );
-  const bottomNotes = definition.notes?.bottom ?? [];
-  const hasBottom = bottomNotes.length > 0;
-  const originalDing = model.definition.notes?.ding;
-  const shiftedDing = definition.notes?.ding;
   const shiftLabel = `${transpose > 0 ? "+" : ""}${transpose}`;
+  const transposeBounds = useMemo(() => {
+    const midiNotes = model.definition.fields
+      .map((field) => noteToMidi(field.note))
+      .filter((midi): midi is number => midi !== null);
+    const minMidi = noteToMidi("F2") ?? 41;
+    const maxMidi = noteToMidi("A6") ?? 93;
+
+    return {
+      min: midiNotes.length ? minMidi - Math.min(...midiNotes) : -12,
+      max: midiNotes.length ? maxMidi - Math.max(...midiNotes) : 12,
+    };
+  }, [model]);
   const topSequence = isCustom
     ? customTopNotes.map((note, slotIndex) => ({
         note,
@@ -247,10 +252,6 @@ export default function HandpanPlayer() {
     ),
     [definition],
   );
-  const displayDescription = isCustom
-    ? "Build a custom layout by assigning a pitch to each tone field."
-    : model.description;
-  const displayScale = isCustom ? "Manual selection" : model.scale;
   const customAssignedCount = [...customTopNotes, ...customBottomNotes].filter(Boolean).length;
   const customSlotCount = customTopCount + customBottomCount;
   const customTopComplete =
@@ -302,8 +303,13 @@ export default function HandpanPlayer() {
     synthRef.current?.dampAll();
     setActiveNote(null);
     setOpenPicker(null);
-    if (!hasBottom) setView("top");
-  }, [modelId, hasBottom, clearTimers]);
+  }, [modelId, clearTimers]);
+
+  useEffect(() => {
+    setTranspose((current) =>
+      Math.min(transposeBounds.max, Math.max(transposeBounds.min, current)),
+    );
+  }, [transposeBounds]);
 
   useEffect(() => {
     clearTimers();
@@ -330,12 +336,12 @@ export default function HandpanPlayer() {
 
   const handleNote = useCallback((note: string) => {
     setActiveNote(note);
-    if (sound) getSynth().strike(note);
-  }, [getSynth, sound]);
+    getSynth().strike(note);
+  }, [getSynth]);
 
   const handleDamp = useCallback((note: string) => {
-    if (sound) getSynth().damp(note);
-  }, [getSynth, sound]);
+    getSynth().damp(note);
+  }, [getSynth]);
 
   useEffect(() => {
     const releasePressedNotes = () => {
@@ -459,7 +465,7 @@ export default function HandpanPlayer() {
         );
     const sequence = ding ? [ding, ...top] : top;
 
-    if (sound && sequence[0]) {
+    if (sequence[0]) {
       getSynth().strike(sequence[0]);
       panRef.current?.strike(sequence[0]);
       setActiveNote(sequence[0]);
@@ -469,42 +475,26 @@ export default function HandpanPlayer() {
       const id = window.setTimeout(() => {
         panRef.current?.strike(note);
         setActiveNote(note);
-        if (sound) getSynth().strike(note);
+        getSynth().strike(note);
       }, index * 300);
       timersRef.current.push(id);
     });
   };
 
-  const toggleSound = () => {
-    setSound((current) => {
-      const next = !current;
-      const synth = getSynth();
-      synth.setEnabled(next);
-      if (!next) synth.dampAll();
-      return next;
-    });
-  };
-
   return (
-    <div className="handpan-player mx-auto w-full max-w-6xl">
-      <div className="mb-10 max-w-2xl">
+    <div className="handpan-player mx-auto w-full max-w-7xl">
+      <div className="mx-auto mb-8 max-w-2xl text-center">
         <p className="mb-3 font-body text-xs uppercase tracking-[0.35em] text-[#d6a86b]">
           Arsoun · interactive studio
         </p>
         <h1 className="font-heading text-3xl font-light tracking-wide text-white sm:text-4xl">
           Find your sound
         </h1>
-        <p className="mt-4 font-body text-sm leading-relaxed text-white/55">
-          Click or tap a tone field to strike it, drag across the surface to
-          mute, and switch between measured layouts. Use the key shift with
-          measured layouts, or choose every pitch yourself in Custom mode.
-           Sound is a recorded sample preview; each handmade instrument has its own voice.
-        </p>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+      <div className="flex flex-col gap-8 xl:grid xl:grid-cols-[minmax(0,1.4fr)_minmax(360px,0.8fr)] xl:items-start xl:gap-10">
          <div
-           className="relative self-start overflow-hidden rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_50%_35%,rgba(214,168,107,0.12),rgba(255,255,255,0.02)_45%,rgba(255,255,255,0)_75%)] p-4 sm:p-8 lg:sticky lg:top-28"
+           className="relative mx-auto w-full max-w-4xl xl:sticky xl:top-28"
            aria-busy={isAudioLoading}
          >
            {isAudioLoading ? (
@@ -515,22 +505,19 @@ export default function HandpanPlayer() {
                </div>
              </div>
            ) : null}
-           <Handpan2D
-            ref={panRef}
-             definition={definition}
-             view={view}
-             rotate={90}
-             theme={theme}
-            showLabels={showLabels}
+            <Handpan2D
+             ref={panRef}
+              definition={definition}
+              rotate={90}
+              theme={theme}
              onNote={handleNote}
              onDamp={handleDamp}
              onUnassigned={openCustomField}
            />
 
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 font-body text-[11px] uppercase tracking-[0.2em] text-white/35">
-            <span>
-              {view === "top" ? "Top view" : "Bottom view"} ·{" "}
-              {definition.fields.length} fields
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-3 font-body text-[11px] uppercase tracking-[0.2em] text-white/35">
+             <span>
+               {definition.fields.length} fields
               {!isCustom && transpose !== 0 ? ` · ${shiftLabel} st` : ""}
             </span>
             <span className="flex items-center gap-2">
@@ -544,135 +531,95 @@ export default function HandpanPlayer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 xl:max-w-none">
           <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
             <h2 className="font-body text-[11px] uppercase tracking-[0.25em] text-white/40">
               Configuration
             </h2>
 
-            <label className="mt-4 block font-body text-xs text-white/45">
-              Model
-              <select
-                id="handpan-model"
-                name="handpan-model"
-                value={modelId}
-                onChange={(event) => setModelId(event.target.value)}
-                className="mt-2 w-full rounded-xl border border-white/10 bg-[#111] px-3 py-2.5 font-body text-sm text-white outline-none transition focus:border-[#d6a86b]/60"
-              >
-                {[{ id: "custom", model: "Custom layout" }, ...PAN_MODELS].map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.model}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end">
+              <label className="block flex-1 font-body text-xs text-white/45">
+                Model
+                <div className="relative mt-2">
+                  <select
+                    id="handpan-model"
+                    name="handpan-model"
+                    value={modelId}
+                    onChange={(event) => setModelId(event.target.value)}
+                    className="w-full appearance-none rounded-xl border border-white/10 bg-[#111] px-3 py-2.5 pr-10 font-body text-sm text-white outline-none transition focus:border-[#d6a86b]/60"
+                  >
+                    {[{ id: "custom", model: "Custom layout" }, ...PAN_MODELS].map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.model}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="pointer-events-none absolute right-4 top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 border-b border-r border-white/45" aria-hidden="true" />
+                </div>
+              </label>
 
-             <p className="mt-3 font-body text-sm leading-relaxed text-white/55">
-               {displayDescription}
-            </p>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-white/10 bg-black/20 p-3">
-                <span className="block font-body text-[10px] uppercase tracking-[0.2em] text-white/35">
-                  Scale
-                </span>
-                <span className="mt-1 block font-body text-sm text-white/80">
-                   {displayScale}
-                </span>
-              </div>
-              <div className="rounded-xl border border-white/10 bg-black/20 p-3">
-                <span className="block font-body text-[10px] uppercase tracking-[0.2em] text-white/35">
-                  Notes
-                </span>
-                <span className="mt-1 block font-body text-sm text-white/80">
-                  {definition.fields.length}
-                </span>
-              </div>
-            </div>
-
-             {!isCustom ? (
-               <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-3">
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-body text-[10px] uppercase tracking-[0.2em] text-white/35">
-                  Key shift
-                </span>
-                <span className="font-body text-xs text-[#e3bb86]">
-                  {transpose === 0 ? "Concert pitch" : `${shiftLabel} st`}
-                </span>
-              </div>
-
-              <div className="mt-3 flex items-center gap-2">
+              {!isCustom ? (
+                <div className="flex shrink-0 items-center gap-2 sm:pb-0.5">
+                  <span className="sr-only">Key shift</span>
                 <button
                   type="button"
                   onClick={() =>
-                    setTranspose((current) => Math.max(-12, current - 1))
-                  }
-                  disabled={transpose <= -12}
+                     setTranspose((current) => Math.max(transposeBounds.min, current - 1))
+                   }
+                   disabled={transpose <= transposeBounds.min}
                   aria-label="Transpose down one semitone"
                   className="h-11 w-11 shrink-0 rounded-lg border border-white/10 text-white/60 transition hover:border-[#d6a86b]/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
                 >
                   −
                 </button>
-                <input
-                  type="range"
-                  min={-12}
-                  max={12}
-                  step={1}
-                  value={transpose}
-                  onChange={(event) =>
-                    setTranspose(Number(event.target.value))
-                  }
-                  aria-label="Transpose in semitones"
-                  className="h-1 w-full cursor-pointer accent-[#d6a86b]"
-                />
+                <button
+                  type="button"
+                  onClick={() => setTranspose(0)}
+                  disabled={transpose === 0}
+                  aria-label="Reset transpose"
+                  className="h-11 w-11 shrink-0 rounded-lg border border-white/10 text-white/60 transition hover:border-[#d6a86b]/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  ↺
+                </button>
                 <button
                   type="button"
                   onClick={() =>
-                    setTranspose((current) => Math.min(12, current + 1))
-                  }
-                  disabled={transpose >= 12}
+                     setTranspose((current) => Math.min(transposeBounds.max, current + 1))
+                   }
+                   disabled={transpose >= transposeBounds.max}
                   aria-label="Transpose up one semitone"
                   className="h-11 w-11 shrink-0 rounded-lg border border-white/10 text-white/60 transition hover:border-[#d6a86b]/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
                 >
                   +
                 </button>
               </div>
+              ) : null}
+            </div>
 
-              <div className="mt-2 flex items-center justify-between gap-2">
-                <p className="font-body text-[11px] leading-relaxed text-white/30">
-                  {originalDing && shiftedDing
-                    ? `${originalDing} → ${shiftedDing} · same layout`
-                    : "Same layout, new pitch"}
-                </p>
-                {transpose !== 0 ? (
-                  <button
-                    type="button"
-                    onClick={() => setTranspose(0)}
-                    className="shrink-0 font-body text-[11px] text-white/40 underline-offset-2 transition hover:text-white/80 hover:underline"
-                  >
-                    Reset
-                  </button>
-                ) : null}
+            <label className="mt-4 block font-body text-xs text-white/45">
+              Style
+              <div className="relative mt-2">
+                <select
+                  id="handpan-style"
+                  name="handpan-style"
+                  value={theme}
+                  onChange={(event) =>
+                    setTheme(event.target.value as PanThemeName)
+                  }
+                  className="w-full appearance-none rounded-xl border border-white/10 bg-[#111] px-3 py-2.5 pr-10 font-body text-sm text-white outline-none transition focus:border-[#d6a86b]/60"
+                >
+                  {THEME_NAMES.map((name) => (
+                    <option key={name} value={name}>
+                      {PAN_THEME_LABELS[name]}
+                    </option>
+                  ))}
+                </select>
+                <span className="pointer-events-none absolute right-4 top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 border-b border-r border-white/45" aria-hidden="true" />
               </div>
-               </div>
-             ) : null}
-           </section>
+            </label>
 
-           <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-             <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="font-body text-[11px] uppercase tracking-[0.25em] text-white/40">
-                    {isCustom ? "Custom note sequence" : "Current notes"}
-                  </h2>
-                  <p className="mt-2 font-body text-xs leading-relaxed text-white/35">
-                    {isCustom
-                      ? "Tap a tone field or choose a slot below, then assign its pitch."
-                     : "Notes shown in the instrument’s playing order."}
-                  </p>
-                  <p className="mt-2 font-body text-[11px] text-[#e3bb86]/70">
-                    Keyboard: 0 ding · 1–9 low to high · Q–O continuing upward
-                  </p>
-                </div>
+            <div className="mt-8 border-t border-white/10 pt-6">
+              <div className="flex items-start justify-end gap-4">
                 {isCustom ? (
                   <div className="flex shrink-0 items-center gap-3">
                     <button
@@ -857,104 +804,20 @@ export default function HandpanPlayer() {
                     ) : null}
                   </div>
                 </div>
-             ) : null}
-           </section>
-
-            <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-             <div className="flex items-center justify-between gap-3">
-               <h2 className="font-body text-[11px] uppercase tracking-[0.25em] text-white/40">
-                 Display
-               </h2>
-               <span className="font-body text-[10px] uppercase tracking-[0.2em] text-[#d6a86b]/70">
-                 Schematic mode
-               </span>
-             </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div>
-                <span className="mb-2 block font-body text-xs text-white/45">
-                  View
-                </span>
-                <div className="flex rounded-xl border border-white/10 bg-black/20 p-1">
-                  <button
-                    type="button"
-                    aria-pressed={view === "top"}
-                    onClick={() => setView("top")}
-                    className={`flex-1 rounded-lg px-2 py-1.5 font-body text-xs transition ${
-                      view === "top"
-                        ? "bg-[#d6a86b] text-black"
-                        : "text-white/55 hover:text-white"
-                    }`}
-                  >
-                    Top
-                  </button>
-                  <button
-                    type="button"
-                    aria-pressed={view === "bottom"}
-                    onClick={() => setView("bottom")}
-                    disabled={!hasBottom}
-                    className={`flex-1 rounded-lg px-2 py-1.5 font-body text-xs transition disabled:cursor-not-allowed disabled:opacity-30 ${
-                      view === "bottom"
-                        ? "bg-[#d6a86b] text-black"
-                        : "text-white/55 hover:text-white"
-                    }`}
-                  >
-                    Bottom
-                  </button>
-                </div>
-              </div>
-
-              <label className="block font-body text-xs text-white/45">
-                 Style
-                 <select
-                   id="handpan-style"
-                   name="handpan-style"
-                   value={theme}
-                  onChange={(event) =>
-                    setTheme(event.target.value as PanThemeName)
-                  }
-                  className="mt-2 w-full rounded-xl border border-white/10 bg-[#111] px-3 py-2.5 font-body text-sm text-white outline-none transition focus:border-[#d6a86b]/60"
-                >
-                  {THEME_NAMES.map((name) => (
-                    <option key={name} value={name}>
-                      {PAN_THEME_LABELS[name]}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              ) : null}
             </div>
 
-             <div className="mt-5 flex flex-col gap-3">
-              <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/10 bg-black/20 px-4 py-3 font-body text-sm text-white/70">
-                Show note names
-                <input
-                  type="checkbox"
-                  checked={showLabels}
-                  onChange={(event) => setShowLabels(event.target.checked)}
-                  className="h-4 w-4 accent-[#d6a86b]"
-                />
-              </label>
-
-              <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/10 bg-black/20 px-4 py-3 font-body text-sm text-white/70">
-                Sound
-                <input
-                  type="checkbox"
-                  checked={sound}
-                  onChange={toggleSound}
-                  className="h-4 w-4 accent-[#d6a86b]"
-                />
-              </label>
-            </div>
-
-             <button
+              <div className="mt-8 border-t border-white/10 pt-6">
+              <button
                type="button"
                onClick={playScale}
                disabled={isCustom && !customTopComplete}
                className="mt-5 w-full rounded-xl bg-[#d6a86b] px-4 py-3 font-body text-xs font-medium uppercase tracking-[0.2em] text-black transition hover:bg-[#e3bb86] disabled:cursor-not-allowed disabled:opacity-35"
-             >
-               Play the scale
-             </button>
-           </section>
+              >
+                Play the scale
+              </button>
+              </div>
+            </section>
         </div>
       </div>
 
