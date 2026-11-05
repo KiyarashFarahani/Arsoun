@@ -1,3 +1,5 @@
+import { noteToMidi } from "./audio";
+
 /**
  * Proportional tone-field ellipse sizes, in the same drawing units as the
  * measured model outlines. The D Kurd 13 values are taken from its measured
@@ -49,3 +51,41 @@ export const DEFAULT_NOTE_ELLIPSE_SIZE: NoteEllipseSize = {
   radial: 32.3,
   tangential: 47.1,
 };
+
+const NOTE_SIZE_POINTS = Object.entries(NOTE_ELLIPSE_SIZES)
+  .map(([note, size]) => ({ note, midi: noteToMidi(note), size }))
+  .filter(
+    (point): point is { note: string; midi: number; size: NoteEllipseSize } =>
+      point.midi !== null,
+  )
+  .sort((a, b) => a.midi - b.midi);
+
+/**
+ * Return a measured size when available, otherwise interpolate between the
+ * nearest measured pitches. This keeps chromatic custom notes proportional
+ * instead of falling back to the much larger default field.
+ */
+export function noteEllipseSize(note: string): NoteEllipseSize {
+  const measured = NOTE_ELLIPSE_SIZES[note];
+  if (measured) return measured;
+
+  const midi = noteToMidi(note);
+  if (midi === null || NOTE_SIZE_POINTS.length === 0) {
+    return DEFAULT_NOTE_ELLIPSE_SIZE;
+  }
+
+  const upperIndex = NOTE_SIZE_POINTS.findIndex((point) => point.midi >= midi);
+  if (upperIndex <= 0) return NOTE_SIZE_POINTS[0].size;
+  if (upperIndex === -1) return NOTE_SIZE_POINTS[NOTE_SIZE_POINTS.length - 1].size;
+
+  const lower = NOTE_SIZE_POINTS[upperIndex - 1];
+  const upper = NOTE_SIZE_POINTS[upperIndex];
+  const progress = (midi - lower.midi) / (upper.midi - lower.midi);
+
+  return {
+    radial: lower.size.radial + (upper.size.radial - lower.size.radial) * progress,
+    tangential:
+      lower.size.tangential +
+      (upper.size.tangential - lower.size.tangential) * progress,
+  };
+}

@@ -5,10 +5,7 @@ import type {
   RingConfig,
   Vec2,
 } from "./types";
-import {
-  DEFAULT_NOTE_ELLIPSE_SIZE,
-  NOTE_ELLIPSE_SIZES,
-} from "./note-sizes";
+import { noteEllipseSize } from "./note-sizes";
 
 const TWO_PI = Math.PI * 2;
 
@@ -167,7 +164,7 @@ export function fieldStats(field: PanField): { x: number; y: number; r: number }
 
 function resizeCustomFields(fields: PanField[]): PanField[] {
   const sizes = fields.map((field) => {
-    const size = NOTE_ELLIPSE_SIZES[field.note] ?? DEFAULT_NOTE_ELLIPSE_SIZE;
+    const size = noteEllipseSize(field.note);
     return { field, size };
   });
 
