@@ -15,11 +15,11 @@ import {
 
 const THEME_NAMES = Object.keys(PAN_THEMES) as PanThemeName[];
 const NOTE_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
-const CUSTOM_NOTE_OPTIONS = Array.from({ length: 5 }, (_, index) => index + 3).flatMap(
+const CUSTOM_NOTE_OPTIONS = Array.from({ length: 5 }, (_, index) => index + 2).flatMap(
   (octave) => NOTE_NAMES.map((name) => `${name}${octave}`),
 ).filter((note) => {
   const midi = noteToMidi(note);
-  return midi !== null && midi >= (noteToMidi("D3") ?? 0) && midi <= (noteToMidi("Bb7") ?? 127);
+  return midi !== null && midi >= (noteToMidi("F2") ?? 0) && midi <= (noteToMidi("A6") ?? 127);
 });
 const MAX_CUSTOM_TOP = 13;
 const MAX_CUSTOM_BOTTOM = 6;
@@ -311,6 +311,14 @@ export default function HandpanPlayer() {
     updateCustomNote(side, index, "");
   };
 
+  const openCustomField = (side: CustomNoteSide, fieldIndex: number) => {
+    if (!isCustom) return;
+    const index = side === "top"
+      ? customTopSlotOrder(customTopCount)[fieldIndex]
+      : fieldIndex;
+    if (index !== undefined) setOpenPicker({ side, index });
+  };
+
   const setTopSlotCount = (count: number) => {
     setCustomTopCount(count);
     setCustomTopNotes((current) => resizeNotes(current, count));
@@ -320,6 +328,18 @@ export default function HandpanPlayer() {
   const setBottomSlotCount = (count: number) => {
     setCustomBottomCount(count);
     setCustomBottomNotes((current) => resizeNotes(current, count));
+    setOpenPicker(null);
+  };
+
+  const removeCustomNote = (side: CustomNoteSide, index: number) => {
+    if (side === "top") {
+      if (customTopCount <= 9 || index === 0) return;
+      setCustomTopCount((current) => Math.max(9, current - 1));
+      setCustomTopNotes((current) => current.filter((_, noteIndex) => noteIndex !== index));
+    } else {
+      setCustomBottomCount((current) => Math.max(0, current - 1));
+      setCustomBottomNotes((current) => current.filter((_, noteIndex) => noteIndex !== index));
+    }
     setOpenPicker(null);
   };
 
@@ -393,9 +413,10 @@ export default function HandpanPlayer() {
              rotate={90}
              theme={theme}
             showLabels={showLabels}
-            onNote={handleNote}
-            onDamp={handleDamp}
-          />
+             onNote={handleNote}
+             onDamp={handleDamp}
+             onUnassigned={openCustomField}
+           />
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3 font-body text-[11px] uppercase tracking-[0.2em] text-white/35">
             <span>
@@ -437,68 +458,7 @@ export default function HandpanPlayer() {
               </select>
             </label>
 
-             {isCustom ? (
-               <div className="mt-4 space-y-4">
-                 <div>
-                   <div className="flex items-center justify-between gap-3">
-                     <span className="font-body text-xs text-white/45">
-                       Top slots, including ding
-                     </span>
-                     <button
-                       type="button"
-                       onClick={clearCustomLayout}
-                       className="font-body text-[11px] text-white/40 underline-offset-2 transition hover:text-white/80 hover:underline"
-                     >
-                       Clear all
-                     </button>
-                   </div>
-                   <div className="mt-2 flex flex-wrap gap-2">
-                     {Array.from({ length: MAX_CUSTOM_TOP - 8 }, (_, i) => i + 9).map(
-                       (count) => (
-                         <button
-                           type="button"
-                           key={count}
-                           aria-pressed={customTopCount === count}
-                           onClick={() => setTopSlotCount(count)}
-                           className={`min-h-11 min-w-11 rounded-full border px-3 py-2 font-body text-xs transition ${
-                             customTopCount === count
-                               ? "border-[#d6a86b] bg-[#d6a86b] text-black"
-                               : "border-white/15 text-white/65 hover:border-white/35 hover:text-white"
-                           }`}
-                         >
-                           {count}
-                         </button>
-                       ),
-                     )}
-                   </div>
-                 </div>
-
-                 <div>
-                   <span className="font-body text-xs text-white/45">
-                     Underside slots
-                   </span>
-                   <div className="mt-2 flex flex-wrap gap-2">
-                     {Array.from({ length: MAX_CUSTOM_BOTTOM + 1 }, (_, count) => (
-                       <button
-                         type="button"
-                         key={count}
-                         aria-pressed={customBottomCount === count}
-                         onClick={() => setBottomSlotCount(count)}
-                         className={`min-h-11 min-w-11 rounded-full border px-3 py-2 font-body text-xs transition ${
-                           customBottomCount === count
-                             ? "border-[#d6a86b] bg-[#d6a86b] text-black"
-                             : "border-white/15 text-white/65 hover:border-white/35 hover:text-white"
-                         }`}
-                       >
-                         {count}
-                       </button>
-                     ))}
-                   </div>
-                 </div>
-               </div>
-             ) : null}
-
-            <p className="mt-3 font-body text-sm leading-relaxed text-white/55">
+             <p className="mt-3 font-body text-sm leading-relaxed text-white/55">
                {displayDescription}
             </p>
 
@@ -591,28 +551,37 @@ export default function HandpanPlayer() {
 
            <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
              <div className="flex items-start justify-between gap-4">
-               <div>
-                 <h2 className="font-body text-[11px] uppercase tracking-[0.25em] text-white/40">
-                   {isCustom ? "Custom note sequence" : "Current notes"}
-                 </h2>
+                <div>
+                  <h2 className="font-body text-[11px] uppercase tracking-[0.25em] text-white/40">
+                    {isCustom ? "Custom note sequence" : "Current notes"}
+                  </h2>
                  <p className="mt-2 font-body text-xs leading-relaxed text-white/35">
-                   {isCustom
-                     ? "Choose a pitch for each tone field. Slots stay in physical order."
+                    {isCustom
+                      ? "Tap a tone field or choose a slot below, then assign its pitch."
                      : "Notes shown in the instrument’s playing order."}
                  </p>
-               </div>
-               {isCustom ? (
-                 <span className="shrink-0 font-body text-[11px] tabular-nums text-[#e3bb86]">
-                   {customAssignedCount}/{customSlotCount} assigned
-                 </span>
-               ) : null}
+                </div>
+                {isCustom ? (
+                  <div className="flex shrink-0 items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={clearCustomLayout}
+                      className="font-body text-[11px] text-white/40 underline-offset-2 transition hover:text-white/80 hover:underline"
+                    >
+                      Clear all
+                    </button>
+                    <span className="font-body text-[11px] tabular-nums text-[#e3bb86]">
+                      {customAssignedCount}/{customSlotCount} assigned
+                    </span>
+                  </div>
+                ) : null}
              </div>
 
              <div className="mt-5">
                <span className="font-body text-[10px] uppercase tracking-[0.2em] text-white/30">
                  Top · playing order
                </span>
-               <div className="mt-2 flex flex-wrap gap-2">
+                <div className="mt-2 flex flex-wrap items-center gap-2">
                   {topSequence.map(({ note, slotIndex }) => {
                     const isPickerOpen =
                       isCustom &&
@@ -624,7 +593,7 @@ export default function HandpanPlayer() {
                         : String(slotIndex).padStart(2, "0");
 
                     return (
-                      <div key={`top-${slotIndex}`} className="relative">
+                       <div key={`top-${slotIndex}`} className="group relative">
                         <button
                           type="button"
                           aria-label={
@@ -663,20 +632,45 @@ export default function HandpanPlayer() {
                          >
                            {note || "—"}
                          </span>
-                       </button>
-
-                      </div>
+                        </button>
+                        {isCustom && customTopCount > 9 && slotIndex > 0 ? (
+                          <button
+                            type="button"
+                            aria-label={`Remove top slot ${slotIndex}`}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              removeCustomNote("top", slotIndex);
+                            }}
+                            className="absolute right-0 top-0 z-10 flex !h-5 !min-h-0 !min-w-0 w-5 shrink-0 -translate-y-1/4 translate-x-1/4 aspect-square items-center justify-center rounded-full border border-white/20 bg-[#171717] p-0 text-xs leading-none text-white/60 opacity-100 shadow-lg transition hover:border-[#d6a86b] hover:text-[#e3bb86] focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-[#d6a86b]/70 sm:opacity-0 sm:group-focus-within:opacity-100 sm:group-hover:opacity-100"
+                          >
+                            −
+                          </button>
+                        ) : null}
+                       </div>
                    );
-                 })}
-               </div>
-             </div>
+                  })}
+                  {isCustom ? (
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setTopSlotCount(customTopCount + 1)}
+                        disabled={customTopCount >= MAX_CUSTOM_TOP}
+                        aria-label="Add top note"
+                        className="min-h-12 min-w-12 rounded-xl border border-dashed border-[#d6a86b]/50 text-xl text-[#e3bb86] transition hover:border-[#d6a86b] disabled:cursor-not-allowed disabled:opacity-30"
+                      >
+                        +
+                      </button>
+                     </div>
+                  ) : null}
+                </div>
+              </div>
 
-             {bottomSequence.length > 0 ? (
-               <div className="mt-5">
+              {isCustom || bottomSequence.length > 0 ? (
+                <div className="mt-5">
                  <span className="font-body text-[10px] uppercase tracking-[0.2em] text-white/30">
                    Underside · playing order
                  </span>
-                 <div className="mt-2 flex flex-wrap gap-2">
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
                    {bottomSequence.map((note, index) => {
                      const isPickerOpen =
                        isCustom &&
@@ -684,7 +678,7 @@ export default function HandpanPlayer() {
                        openPicker.index === index;
 
                      return (
-                       <div key={`bottom-${index}`} className="relative">
+                        <div key={`bottom-${index}`} className="group relative">
                          <button
                            type="button"
                            aria-label={
@@ -719,13 +713,38 @@ export default function HandpanPlayer() {
                            >
                              {note || "—"}
                            </span>
-                         </button>
-
-                        </div>
+                          </button>
+                          {isCustom ? (
+                            <button
+                              type="button"
+                              aria-label={`Remove underside slot ${index + 1}`}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                removeCustomNote("bottom", index);
+                              }}
+                              className="absolute right-0 top-0 z-10 flex !h-5 !min-h-0 !min-w-0 w-5 shrink-0 -translate-y-1/4 translate-x-1/4 aspect-square items-center justify-center rounded-full border border-white/20 bg-[#171717] p-0 text-xs leading-none text-white/60 opacity-100 shadow-lg transition hover:border-[#d6a86b] hover:text-[#e3bb86] focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-[#d6a86b]/70 sm:opacity-0 sm:group-focus-within:opacity-100 sm:group-hover:opacity-100"
+                            >
+                              −
+                            </button>
+                          ) : null}
+                         </div>
                      );
                    })}
-                 </div>
-               </div>
+                    {isCustom ? (
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setBottomSlotCount(customBottomCount + 1)}
+                          disabled={customBottomCount >= MAX_CUSTOM_BOTTOM}
+                          aria-label="Add underside note"
+                          className="min-h-12 min-w-12 rounded-xl border border-dashed border-[#d6a86b]/50 text-xl text-[#e3bb86] transition hover:border-[#d6a86b] disabled:cursor-not-allowed disabled:opacity-30"
+                        >
+                          +
+                        </button>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
              ) : null}
            </section>
 

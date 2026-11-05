@@ -41,6 +41,7 @@ export interface Handpan2DProps {
   renderSpin?: number;
   onNote?: (note: string) => void;
   onDamp?: (note: string) => void;
+  onUnassigned?: (side: "top" | "bottom", index: number) => void;
 }
 
 const TWO_PI = Math.PI * 2;
@@ -78,6 +79,7 @@ const Handpan2D = forwardRef<Handpan2DHandle, Handpan2DProps>(
       renderSpin = 0,
       onNote,
       onDamp,
+      onUnassigned,
     },
     ref,
   ) {
@@ -264,8 +266,12 @@ const Handpan2D = forwardRef<Handpan2DHandle, Handpan2DProps>(
     };
 
     const handlePointerDown =
-      (note: string) => (event: ReactPointerEvent<SVGGElement>) => {
-        if (!note) return;
+      (note: string, side: "top" | "bottom", index: number) =>
+      (event: ReactPointerEvent<SVGGElement>) => {
+        if (!note) {
+          onUnassigned?.(side, index);
+          return;
+        }
         pointer.current = {
           note,
           x: event.clientX,
@@ -302,15 +308,18 @@ const Handpan2D = forwardRef<Handpan2DHandle, Handpan2DProps>(
     };
 
     const handleClick = (note: string) => () => {
+      if (!note) return;
       if (performance.now() - (lastStrike.current[note] ?? 0) < 700) return;
       play(note);
     };
 
     const handleKeyDown =
-      (note: string) => (event: KeyboardEvent<SVGGElement>) => {
+      (note: string, side: "top" | "bottom", index: number) =>
+      (event: KeyboardEvent<SVGGElement>) => {
         if (event.key !== "Enter" && event.key !== " ") return;
         event.preventDefault();
-        play(note);
+        if (note) play(note);
+        else onUnassigned?.(side, index);
       };
 
     const asPhoto = Boolean(renderSrc);
@@ -395,12 +404,12 @@ const Handpan2D = forwardRef<Handpan2DHandle, Handpan2DProps>(
               tabIndex={0}
               role="button"
               aria-label={field.note ? `Play ${field.note}` : "Unassigned tone field"}
-              onPointerDown={handlePointerDown(field.note)}
+              onPointerDown={handlePointerDown(field.note, "bottom", index)}
               onPointerMove={handlePointerMove(field.note)}
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerCancel(field.note)}
               onClick={handleClick(field.note)}
-              onKeyDown={handleKeyDown(field.note)}
+              onKeyDown={handleKeyDown(field.note, "bottom", index)}
             >
               <path
                 className={asPhoto ? "pan-hit" : "pan-field-shape"}
@@ -424,12 +433,20 @@ const Handpan2D = forwardRef<Handpan2DHandle, Handpan2DProps>(
               tabIndex={0}
               role="button"
               aria-label={field.note ? `Play ${field.note}` : "Unassigned tone field"}
-              onPointerDown={handlePointerDown(field.note)}
+              onPointerDown={handlePointerDown(
+                field.note,
+                flipY ? "bottom" : "top",
+                index,
+              )}
               onPointerMove={handlePointerMove(field.note)}
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerCancel(field.note)}
               onClick={handleClick(field.note)}
-              onKeyDown={handleKeyDown(field.note)}
+              onKeyDown={handleKeyDown(
+                field.note,
+                flipY ? "bottom" : "top",
+                index,
+              )}
             >
               <path
                 className={asPhoto ? "pan-hit" : "pan-field-shape"}
